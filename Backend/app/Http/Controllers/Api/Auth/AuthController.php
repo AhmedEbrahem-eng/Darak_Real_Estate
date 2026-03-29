@@ -17,12 +17,14 @@ class AuthController extends Controller
     {
         try 
         {
+            $role = in_array($request->role, ['user', 'landlord']) ? $request->role : 'user';
+
             User::create([
                 'first_name' => $request->first_name,
                 'last_name' => $request->last_name,
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
-                'role' => $request->role,
+                'role' => $role,
                 'phone_number' => '+2' . $request->phone_number,
                 'avatar' => 'https://upload.wikimedia.org/wikipedia/commons/2/2c/Default_pfp.svg'
             ]);
