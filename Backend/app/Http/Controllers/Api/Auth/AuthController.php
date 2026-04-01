@@ -36,7 +36,7 @@ class AuthController extends Controller
         {
             return response()->json([
                 'success' => false,
-                'message' => $th->getMessage(),
+                'message' => "An error occurred during registration",
             ], 500);
         }
     }
@@ -73,7 +73,7 @@ class AuthController extends Controller
         {
             return response()->json([
                 'success' => false,
-                'message'=> $th->getMessage(),
+                'message'=> "An error occurred during login",
             ], 500);
         }
     }
@@ -93,7 +93,7 @@ class AuthController extends Controller
         {
             return response()->json([
                 'success' => false,
-                'message'=> $th->getMessage(),
+                'message'=> "An error occurred fetching profile",
             ], 500);
         }
     }
@@ -113,7 +113,7 @@ class AuthController extends Controller
         {
             return response()->json([
                 'success' => false,
-                'message'=> $th->getMessage(),
+                'message'=> "An error occurred during logout",
             ], 500);
         }
     }
