@@ -48,7 +48,7 @@ class ResetPasswordController extends Controller
         catch (\Throwable $th) {
             return response()->json([
                 'success' => false,
-                'message' => $th->getMessage(),
+                'message' => "An error occurred while resetting the password",
             ], 500);
         }
     }

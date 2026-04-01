@@ -29,7 +29,7 @@ class SocialLoginController extends Controller
         {
             return response()->json([
                 'success' => false,
-                'message' => $th->getMessage(),
+                'message' => "An error occurred during social login",
             ], 500);
         }
     }

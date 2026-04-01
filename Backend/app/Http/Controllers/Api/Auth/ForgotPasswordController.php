@@ -52,7 +52,7 @@ class ForgotPasswordController extends Controller
         {
             return response()->json([
                 'success' => false,
-                'message'=> $th->getMessage(),
+                'message'=> "An error occurred while sending the reset link",
             ], 500);
         }
     }
