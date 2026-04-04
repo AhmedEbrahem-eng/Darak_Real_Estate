@@ -29,14 +29,14 @@ class AuthController extends Controller
 
             return response()->json([
                 'success' => true,
-                'message'=> "User registered successfully",
+                'message' => "User registered successfully",
             ], 201);
         } 
         catch (\Throwable $th) 
         {
             return response()->json([
                 'success' => false,
-                'message' => $th->getMessage(),
+                'message' => 'An error occurred while registering the user.',
             ], 500);
         }
     }
@@ -63,9 +63,9 @@ class AuthController extends Controller
             $tokenResult->accessToken->save();
     
             return response()->json([
-                'success'=> true,
-                'message'=> 'User logged in successfully',
-                'user'=> new UserResource($user),
+                'success' => true,
+                'message' => 'User logged in successfully',
+                'user' => new UserResource($user),
                 'access_token' => $token,
             ]);
         }
@@ -73,7 +73,7 @@ class AuthController extends Controller
         {
             return response()->json([
                 'success' => false,
-                'message'=> $th->getMessage(),
+                'message'=> 'An error occurred during login.',
             ], 500);
         }
     }
@@ -84,8 +84,8 @@ class AuthController extends Controller
         {
             $userData = auth()->user();
             return response()->json([
-                'success'=> true,
-                'message'=> 'Profile Information',
+                'success' => true,
+                'message' => 'Profile Information',
                 'user' => new UserResource($userData),
             ], 200);
         }
@@ -93,7 +93,7 @@ class AuthController extends Controller
         {
             return response()->json([
                 'success' => false,
-                'message'=> $th->getMessage(),
+                'message'=> 'An error occurred while fetching profile information.',
             ], 500);
         }
     }
@@ -104,8 +104,8 @@ class AuthController extends Controller
         {
             auth()->user()->tokens()->delete();
             return response()->json([
-                'success'=> true,
-                'message'=> 'User logged out successfully',
+                'success' => true,
+                'message' => 'User logged out successfully',
                 'data' => [],
             ], 200);
         }
@@ -113,7 +113,7 @@ class AuthController extends Controller
         {
             return response()->json([
                 'success' => false,
-                'message'=> $th->getMessage(),
+                'message'=> 'An error occurred while logging out.',
             ], 500);
         }
     }
