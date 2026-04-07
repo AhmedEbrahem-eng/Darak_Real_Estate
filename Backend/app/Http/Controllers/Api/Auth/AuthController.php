@@ -10,14 +10,15 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 
 class AuthController extends Controller
 {
-    public function register(RegisterUserRequest $request)
+    public function register(RegisterUserRequest $request, User $userModel)
     {
         try 
         {
-            User::create([
+            $userModel->create([
                 'first_name' => $request->first_name,
                 'last_name' => $request->last_name,
                 'email' => $request->email,
@@ -34,9 +35,10 @@ class AuthController extends Controller
         } 
         catch (\Throwable $th) 
         {
+            Log::error('Registration Error: ' . $th->getMessage());
             return response()->json([
                 'success' => false,
-                'message' => $th->getMessage(),
+                'message' => 'Internal Server Error',
             ], 500);
         }
     }
@@ -71,9 +73,10 @@ class AuthController extends Controller
         }
         catch (\Throwable $th) 
         {
+            Log::error('Login Error: ' . $th->getMessage());
             return response()->json([
                 'success' => false,
-                'message'=> $th->getMessage(),
+                'message'=> 'Internal Server Error',
             ], 500);
         }
     }
@@ -91,9 +94,10 @@ class AuthController extends Controller
         }
         catch (\Throwable $th) 
         {
+            Log::error('Profile Fetch Error: ' . $th->getMessage());
             return response()->json([
                 'success' => false,
-                'message'=> $th->getMessage(),
+                'message'=> 'Internal Server Error',
             ], 500);
         }
     }
@@ -111,9 +115,10 @@ class AuthController extends Controller
         }
         catch (\Throwable $th) 
         {
+            Log::error('Logout Error: ' . $th->getMessage());
             return response()->json([
                 'success' => false,
-                'message'=> $th->getMessage(),
+                'message'=> 'Internal Server Error',
             ], 500);
         }
     }
