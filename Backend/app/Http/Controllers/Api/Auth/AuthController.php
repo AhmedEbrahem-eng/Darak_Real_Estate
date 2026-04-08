@@ -9,6 +9,7 @@ use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
 
 class AuthController extends Controller
@@ -34,9 +35,10 @@ class AuthController extends Controller
         } 
         catch (\Throwable $th) 
         {
+            Log::error('Registration error: ' . $th->getMessage());
             return response()->json([
                 'success' => false,
-                'message' => $th->getMessage(),
+                'message' => 'An error occurred during registration.',
             ], 500);
         }
     }
@@ -71,9 +73,10 @@ class AuthController extends Controller
         }
         catch (\Throwable $th) 
         {
+            Log::error('Login error: ' . $th->getMessage());
             return response()->json([
                 'success' => false,
-                'message'=> $th->getMessage(),
+                'message'=> 'An error occurred during login.',
             ], 500);
         }
     }
@@ -91,9 +94,10 @@ class AuthController extends Controller
         }
         catch (\Throwable $th) 
         {
+            Log::error('Profile fetch error: ' . $th->getMessage());
             return response()->json([
                 'success' => false,
-                'message'=> $th->getMessage(),
+                'message'=> 'An error occurred while fetching profile.',
             ], 500);
         }
     }
@@ -111,9 +115,10 @@ class AuthController extends Controller
         }
         catch (\Throwable $th) 
         {
+            Log::error('Logout error: ' . $th->getMessage());
             return response()->json([
                 'success' => false,
-                'message'=> $th->getMessage(),
+                'message'=> 'An error occurred during logout.',
             ], 500);
         }
     }
