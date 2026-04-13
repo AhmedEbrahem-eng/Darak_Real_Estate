@@ -1,0 +1,4 @@
+## 2025-05-15 - [Broken Access Control and Privilege Escalation]
+**Vulnerability:** User registration allowed any user to register with the 'admin' role by passing 'role' => 'admin' in the request. Additionally, multiple administrative routes (reporting, dashboard, amenities) were exposed without authentication or role-based checks.
+**Learning:** Whitelists for user roles in registration forms should explicitly exclude administrative roles. Route groups intended for administrators must consistently apply 'auth' and 'role' middleware, as missing these on even one endpoint can lead to significant data exposure.
+**Prevention:** Regularly audit api.php for unprotected routes and ensure that FormRequest validation for roles is as restrictive as possible. Use automated security tests to verify that sensitive routes return 401/403 for unauthorized users.
