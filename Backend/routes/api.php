@@ -64,16 +64,16 @@ Route::prefix('users')->middleware('auth:sanctum')->group(function () {
     Route::put('/updateAvatar', [UserController::class, 'updateAvatar']);
 });
 Route::prefix('report-users')->group(function(){
-    Route::get('/',[ReportUserController::class,'index']);
-    Route::delete('deleteReport/{id}',[ReportUserController::class,'deleteReport']);
-    Route::delete('deleteLandlord/{id}',[ReportUserController::class,'deleteUser']);
+    Route::get('/',[ReportUserController::class,'index'])->middleware(['auth:sanctum', 'checkTokenExpiry', 'admin']);
+    Route::delete('deleteReport/{id}',[ReportUserController::class,'deleteReport'])->middleware(['auth:sanctum', 'checkTokenExpiry', 'admin']);
+    Route::delete('deleteLandlord/{id}',[ReportUserController::class,'deleteUser'])->middleware(['auth:sanctum', 'checkTokenExpiry', 'admin']);
     Route::post('/', [ReportUserController::class, 'store'])->middleware('auth:sanctum');
 });
 
 Route::prefix('report-properties')->group(function(){
-    Route::get('/',[ReportPropertyController::class,'index']);
-    Route::delete('deleteReport/{id}',[ReportPropertyController::class,'deleteReport']);
-    Route::delete('deleteProperty/{id}',[ReportPropertyController::class,'deleteProperty']);
+    Route::get('/',[ReportPropertyController::class,'index'])->middleware(['auth:sanctum', 'checkTokenExpiry', 'admin']);
+    Route::delete('deleteReport/{id}',[ReportPropertyController::class,'deleteReport'])->middleware(['auth:sanctum', 'checkTokenExpiry', 'admin']);
+    Route::delete('deleteProperty/{id}',[ReportPropertyController::class,'deleteProperty'])->middleware(['auth:sanctum', 'checkTokenExpiry', 'admin']);
     Route::post('/', [ReportPropertyController::class, 'store'])->middleware('auth:sanctum');
 });
 
@@ -102,7 +102,7 @@ Route::prefix('properties')->group(function(){
     Route::delete('/{id}',[PropertyController::class,'deleteProperty']);
     Route::put('/{propertyId}/status', [PropertyController::class, 'changePropertyStatus'])->middleware('admin','auth:sanctum');
 });
-Route::prefix('property-updates')->middleware('auth:sanctum')->group(function () {
+Route::prefix('property-updates')->middleware(['auth:sanctum', 'checkTokenExpiry', 'admin'])->group(function () {
     Route::get('/', [PropertyUpdateController::class, 'index']);
     Route::get('/{id}/new', [PropertyUpdateController::class, 'showNewProperty']);
     Route::get('/{id}/old', [PropertyUpdateController::class, 'showOldProperty']);
@@ -124,12 +124,12 @@ Route::prefix('wishlist')->middleware(['auth:sanctum', 'checkTokenExpiry'])->gro
 });
 
 // Overview Admin Page ROUTE
-Route::prefix('dashboard')->group(function () {
+Route::prefix('dashboard')->middleware(['auth:sanctum', 'checkTokenExpiry', 'admin'])->group(function () {
     Route::get('/home', [DashboardController::class, 'overview']);
 });
 
 // Amenity Admin Page ROUTE
-Route::prefix('amenities')->group(function () {
+Route::prefix('amenities')->middleware(['auth:sanctum', 'checkTokenExpiry', 'admin'])->group(function () {
     Route::get('/', [AmenityController::class, 'index']);
     Route::get('/available-amenities', [AmenityController::class, 'getAvailableAmenities']);
     Route::post('/', [AmenityController::class, 'store']);
@@ -160,8 +160,8 @@ Route::prefix('tour')->middleware(['auth:sanctum', 'checkTokenExpiry'])->group(f
     Route::get('/{status}', [TourController::class, 'getToursByStatus']);
     Route::delete('/{tourId}', [TourController::class, 'deleteTour']);
 });
-Route::post('/tours/{id}/approve', [TourController::class, 'approveTour']);
-Route::post('/tours/{id}/decline', [TourController::class, 'declineTour']);
+Route::post('/tours/{id}/approve', [TourController::class, 'approveTour'])->middleware(['auth:sanctum', 'checkTokenExpiry']);
+Route::post('/tours/{id}/decline', [TourController::class, 'declineTour'])->middleware(['auth:sanctum', 'checkTokenExpiry']);
 
 Route::get('locations',[LocationController::class,'index']);
 
