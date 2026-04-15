@@ -1,0 +1,1 @@
+{"version":1,"defects":[],"times":{"Tests\\Feature\\SecurityTest::test_user_cannot_register_as_admin":0.056,"Tests\\Feature\\SecurityTest::test_administrative_routes_are_protected":0.015}}
