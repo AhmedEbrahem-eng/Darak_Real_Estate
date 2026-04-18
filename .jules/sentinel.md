@@ -1,0 +1,4 @@
+## 2024-06-13 - [Privilege Escalation and Broken Access Control]
+**Vulnerability:** The registration endpoint allowed users to specify an 'admin' role, and multiple administrative routes lacked the 'admin' middleware, allowing any authenticated user to access them. Additionally, API catch blocks leaked raw exception messages.
+**Learning:** Overly permissive input validation and incomplete middleware application on routes are common security gaps in rapid development. Generic error handling is crucial to prevent information leakage.
+**Prevention:** Always use whitelists for sensitive input fields like 'role'. Group administrative routes under strict authentication and authorization middleware. Use standardized error response wrappers that log details internally but show generic messages to users.
