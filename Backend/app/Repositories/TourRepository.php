@@ -50,9 +50,14 @@ class TourRepository implements TourRepositoryInterface
     }
 
 
+    public function findTour(int $id)
+    {
+        return Tour::find($id);
+    }
+
     public function approveTour(int $id, int $tourDateId)
     {
-        $tour = Tour::find($id);
+        $tour = $this->findTour($id);
 
         if (!$tour) {
             return false;
@@ -110,7 +115,7 @@ class TourRepository implements TourRepositoryInterface
 
     public function declineTour(int $id, string $message)
     {
-        $tour = Tour::find($id);
+        $tour = $this->findTour($id);
 
         if (!$tour) {
             return false;
