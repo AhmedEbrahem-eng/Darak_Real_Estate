@@ -30,7 +30,7 @@ class ReviewRepository implements ReviewRepositoryInterface
     public function updateReview(int $id, array $data)
     {
         $review = Review::find($id);
-        if ($review) {
+        if ($review && $review->user_id === Auth::id()) {
             $review->update($data);
             return $review;
         }
@@ -39,8 +39,7 @@ class ReviewRepository implements ReviewRepositoryInterface
     public function deleteReview(int $id)
     {
         $review = Review::find($id);
-        $review['user_id'] = Auth::id();
-        if ($review) {
+        if ($review && $review->user_id === Auth::id()) {
             $review->delete();
             return true;
         }
