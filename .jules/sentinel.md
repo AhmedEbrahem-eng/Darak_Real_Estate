@@ -1,0 +1,4 @@
+## 2024-05-22 - [IDOR in Review Management]
+**Vulnerability:** Insecure Direct Object Reference (IDOR) and missing authentication on `reviews` update and delete endpoints.
+**Learning:** Routes were publicly accessible without `auth:sanctum` middleware, and the repository did not verify that the authenticated user owned the review before performing destructive actions. Additionally, the `deleteReview` method had a bug where it attempted to modify a property on a potentially null object, which also failed because it didn't use the model's delete method correctly in some cases.
+**Prevention:** Always wrap destructive API routes in authentication middleware and implement ownership checks in the Repository or via Laravel Policies. Use `assertSoftDeleted` in tests when `SoftDeletes` trait is present on the model.

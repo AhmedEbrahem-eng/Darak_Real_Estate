@@ -48,7 +48,7 @@ class ReviewController extends Controller
         if ($review) {
             return response()->json(['data' => new ReviewResource($review)], 200);
         } else {
-            return response()->json(['message' => 'Failed to update review or review not found'], 404);
+            return response()->json(['message' => 'Unauthorized or review not found'], 403);
         }
     }
     public function delete($id){
@@ -56,7 +56,7 @@ class ReviewController extends Controller
         if ($review) {
             return response()->json(['message' => 'review deleted successfuly'], 200);
         } else {
-            return response()->json(['message' => 'review not found'], 404);
+            return response()->json(['message' => 'Unauthorized or review not found'], 403);
         }
     }
     public function calcAverage($id)
