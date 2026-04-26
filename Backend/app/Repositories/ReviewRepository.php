@@ -31,6 +31,10 @@ class ReviewRepository implements ReviewRepositoryInterface
     {
         $review = Review::find($id);
         if ($review) {
+            // Security Check: Only the owner of the review or an admin can update it
+            if ($review->user_id !== Auth::id() && Auth::user()->role !== 'admin') {
+                return null;
+            }
             $review->update($data);
             return $review;
         }
@@ -39,8 +43,11 @@ class ReviewRepository implements ReviewRepositoryInterface
     public function deleteReview(int $id)
     {
         $review = Review::find($id);
-        $review['user_id'] = Auth::id();
         if ($review) {
+            // Security Check: Only the owner of the review or an admin can delete it
+            if ($review->user_id !== Auth::id() && Auth::user()->role !== 'admin') {
+                return null;
+            }
             $review->delete();
             return true;
         }

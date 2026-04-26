@@ -1,0 +1,4 @@
+## 2026-04-26 - [Broken Access Control and IDOR in Reviews]
+**Vulnerability:** Many administrative and sensitive endpoints (amenities, dashboard, reports) were unprotected or lacked role-based checks. Additionally, an IDOR vulnerability existed in review updates/deletions, allowing users to modify or delete reviews they didn't own.
+**Learning:** Even when using a framework like Laravel, it's easy to overlook route protection when routes are defined outside of a centralized authenticated group. Repository-level checks are essential as a second layer of defense.
+**Prevention:** Group all administrative routes under a common middleware stack (`auth:sanctum`, `checkTokenExpiry`, `admin`). Implement ownership checks in repository or controller methods for all resource-specific actions (update, delete).
