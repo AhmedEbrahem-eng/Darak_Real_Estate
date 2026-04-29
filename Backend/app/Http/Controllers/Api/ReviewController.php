@@ -48,15 +48,16 @@ class ReviewController extends Controller
         if ($review) {
             return response()->json(['data' => new ReviewResource($review)], 200);
         } else {
-            return response()->json(['message' => 'Failed to update review or review not found'], 404);
+            return response()->json(['message' => 'Failed to update review or review not found'], 403);
         }
     }
-    public function delete($id){
+    public function delete($id)
+    {
         $review = $this->reviewRepository->deleteReview($id);
         if ($review) {
             return response()->json(['message' => 'review deleted successfuly'], 200);
         } else {
-            return response()->json(['message' => 'review not found'], 404);
+            return response()->json(['message' => 'review not found or unauthorized'], 403);
         }
     }
     public function calcAverage($id)
