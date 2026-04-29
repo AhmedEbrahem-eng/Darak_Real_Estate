@@ -1,0 +1,4 @@
+## 2024-04-29 - Broken Access Control on Reviews
+**Vulnerability:** IDOR and missing authentication on review update and delete operations. Any user could update or delete any review by sending requests to `/api/reviews/{id}`.
+**Learning:** The repository methods `updateReview` and `deleteReview` lacked authorization logic, and the corresponding routes in `api.php` were not protected by any authentication middleware. Furthermore, `deleteReview` had a bug where it would reassign the review's `user_id` to the current user's ID before deletion, which was both insecure and logically incorrect.
+**Prevention:** Always use authentication middleware for state-changing routes. Implement ownership and/or role-based access control (RBAC) checks at the repository or controller level to ensure that users can only modify their own data or data they are authorized to manage.
