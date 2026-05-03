@@ -74,16 +74,33 @@ class TourController extends Controller
             'tours' => TourResource::collection($tours),
         ], 200);
     }
-    public function deleteTour($id){
-        $tour= $this->tourRepository->deleteTour($id);
-        if($tour){
+    public function deleteTour($id)
+    {
+        $tour = $this->tourRepository->findTour($id);
+
+        if (!$tour) {
+            return response()->json(['message' => 'tour not found'], 404);
+        }
+
+        // Authorization: Only the requester, the landlord, or an admin can delete the tour
+        $user = Auth::user();
+        $isOwner = $tour->user_id === $user->id;
+        $isLandlord = $tour->property && $tour->property->user_id === $user->id;
+        $isAdmin = $user->role === 'admin';
+
+        if (!$isOwner && !$isLandlord && !$isAdmin) {
+            return response()->json(['message' => 'You are not authorized to delete this tour'], 403);
+        }
+
+        $success = $this->tourRepository->deleteTour($id);
+        if ($success) {
             return response()->json([
-                'message'=>'tour cancelled successfully',
+                'message' => 'tour cancelled successfully',
             ], 200);
-        }else{
+        } else {
             return response()->json([
-                'message'=>'tour not found',
-            ], 400);
+                'message' => 'failed to cancel tour',
+            ], 500);
         }
     }
 

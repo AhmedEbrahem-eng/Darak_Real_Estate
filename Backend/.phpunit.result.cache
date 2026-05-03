@@ -1,0 +1,1 @@
+{"version":2,"defects":[],"times":{"Tests\\Feature\\TourSecurityTest::test_user_cannot_delete_someone_elses_tour":0.08,"Tests\\Feature\\TourSecurityTest::test_unauthenticated_user_cannot_approve_tour":0.005,"Tests\\Feature\\TourSecurityTest::test_non_admin_cannot_approve_tour":0.01}}
