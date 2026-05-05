@@ -10,14 +10,22 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 
 class AuthController extends Controller
 {
+    protected $user;
+
+    public function __construct(User $user)
+    {
+        $this->user = $user;
+    }
+
     public function register(RegisterUserRequest $request)
     {
         try 
         {
-            User::create([
+            $this->user->create([
                 'first_name' => $request->first_name,
                 'last_name' => $request->last_name,
                 'email' => $request->email,
@@ -34,9 +42,10 @@ class AuthController extends Controller
         } 
         catch (\Throwable $th) 
         {
+            Log::error($th);
             return response()->json([
                 'success' => false,
-                'message' => $th->getMessage(),
+                'message' => 'An internal server error occurred.',
             ], 500);
         }
     }
@@ -45,7 +54,7 @@ class AuthController extends Controller
     {
         try
         {
-            $user = User::where('email', $request->email)->first();
+            $user = $this->user->where('email', $request->email)->first();
     
             if (!$user || !Hash::check($request->password, $user->password)) {
                 return response()->json([
@@ -71,9 +80,10 @@ class AuthController extends Controller
         }
         catch (\Throwable $th) 
         {
+            Log::error($th);
             return response()->json([
                 'success' => false,
-                'message'=> $th->getMessage(),
+                'message'=> 'An internal server error occurred.',
             ], 500);
         }
     }
@@ -91,9 +101,10 @@ class AuthController extends Controller
         }
         catch (\Throwable $th) 
         {
+            Log::error($th);
             return response()->json([
                 'success' => false,
-                'message'=> $th->getMessage(),
+                'message'=> 'An internal server error occurred.',
             ], 500);
         }
     }
@@ -111,9 +122,10 @@ class AuthController extends Controller
         }
         catch (\Throwable $th) 
         {
+            Log::error($th);
             return response()->json([
                 'success' => false,
-                'message'=> $th->getMessage(),
+                'message'=> 'An internal server error occurred.',
             ], 500);
         }
     }
