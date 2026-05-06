@@ -141,16 +141,16 @@ Route::prefix('amenities')->group(function () {
 
 Route::prefix('reviews')->group(function () {
     Route::get('/', [ReviewController::class, 'show']);
-    Route::post('/',[ReviewController::class, 'store'])->middleware('auth:sanctum');
-    Route::put('/{id}', [ReviewController::class, 'update']);
-    Route::delete('/{id}', [ReviewController::class, 'delete']);
+    Route::post('/', [ReviewController::class, 'store'])->middleware(['auth:sanctum', 'checkTokenExpiry']);
+    Route::put('/{id}', [ReviewController::class, 'update'])->middleware(['auth:sanctum', 'checkTokenExpiry']);
+    Route::delete('/{id}', [ReviewController::class, 'delete'])->middleware(['auth:sanctum', 'checkTokenExpiry']);
     Route::get('property/{id}', [ReviewController::class, 'showPropertyReviews']);
     Route::get('Average/{id}', [ReviewController::class, 'calcAverage']);
-    
+
 });
 Route::prefix('reactions')->group(function () {
-    Route::post('/',[ReactionController::class, 'store'])->middleware('auth:sanctum');
-    Route::delete('/{id}',[ReactionController::class, 'delete']);
+    Route::post('/', [ReactionController::class, 'store'])->middleware(['auth:sanctum', 'checkTokenExpiry']);
+    Route::delete('/{id}', [ReactionController::class, 'delete'])->middleware(['auth:sanctum', 'checkTokenExpiry']);
 });
 
 
