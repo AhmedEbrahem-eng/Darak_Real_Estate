@@ -167,6 +167,11 @@ class TourRepository implements TourRepositoryInterface
         return true;
     }
 
+    public function findTour(int $id)
+    {
+        return Tour::with('property')->find($id);
+    }
+
     public function getUserTours(int $userId)
     {
         return Tour::where('user_id', $userId)
