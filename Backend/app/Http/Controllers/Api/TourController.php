@@ -38,6 +38,14 @@ class TourController extends Controller
 
     public function approveTour(Request $request, $id)
     {
+        $tour = $this->tourRepository->findTour($id);
+        if (!$tour) {
+            return response()->json(['error' => 'Tour not found'], 404);
+        }
+        if ($tour->property->user_id !== Auth::id()) {
+            return response()->json(['error' => 'Forbidden'], 403);
+        }
+
         $request->validate([
             'tour_date' => 'required|exists:tour_dates,id,tour_id,' . $id,
         ]);
@@ -52,6 +60,14 @@ class TourController extends Controller
 
     public function declineTour(DeclineTourRequest $request,$id)
     {
+        $tour = $this->tourRepository->findTour($id);
+        if (!$tour) {
+            return response()->json(['error' => 'Tour not found'], 404);
+        }
+        if ($tour->property->user_id !== Auth::id()) {
+            return response()->json(['error' => 'Forbidden'], 403);
+        }
+
         $message = $request->input('message');
         $success = $this->tourRepository->declineTour($id,$message);
         if (!$success) {
@@ -75,15 +91,24 @@ class TourController extends Controller
         ], 200);
     }
     public function deleteTour($id){
-        $tour= $this->tourRepository->deleteTour($id);
-        if($tour){
+        $tour = $this->tourRepository->findTour($id);
+        if (!$tour) {
+            return response()->json(['message' => 'tour not found'], 404);
+        }
+        $user = Auth::user();
+        if ($tour->user_id !== $user->id && $tour->property->user_id !== $user->id && $user->role !== 'admin') {
+            return response()->json(['message' => 'Forbidden'], 403);
+        }
+
+        $success = $this->tourRepository->deleteTour($id);
+        if($success){
             return response()->json([
                 'message'=>'tour cancelled successfully',
             ], 200);
         }else{
             return response()->json([
                 'message'=>'tour not found',
-            ], 400);
+            ], 404);
         }
     }
 
