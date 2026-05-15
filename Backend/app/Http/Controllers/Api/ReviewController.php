@@ -44,19 +44,38 @@ class ReviewController extends Controller
     }
     public function update(UpdateReviewRequest $request, $id)
     {
-        $review = $this->reviewRepository->updateReview($id, $request->validated());
-        if ($review) {
-            return response()->json(['data' => new ReviewResource($review)], 200);
+        $review = $this->reviewRepository->findReview($id);
+        if (!$review) {
+            return response()->json(['message' => 'review not found'], 404);
+        }
+
+        if ($review->user_id !== auth()->id() && auth()->user()->role !== 'admin') {
+            return response()->json(['message' => 'You are not authorized to update this review'], 403);
+        }
+
+        $updatedReview = $this->reviewRepository->updateReviewObject($review, $request->validated());
+        if ($updatedReview) {
+            return response()->json(['data' => new ReviewResource($updatedReview)], 200);
         } else {
-            return response()->json(['message' => 'Failed to update review or review not found'], 404);
+            return response()->json(['message' => 'Failed to update review'], 404);
         }
     }
-    public function delete($id){
-        $review = $this->reviewRepository->deleteReview($id);
-        if ($review) {
+    public function delete($id)
+    {
+        $review = $this->reviewRepository->findReview($id);
+        if (!$review) {
+            return response()->json(['message' => 'review not found'], 404);
+        }
+
+        if ($review->user_id !== auth()->id() && auth()->user()->role !== 'admin') {
+            return response()->json(['message' => 'You are not authorized to delete this review'], 403);
+        }
+
+        $success = $this->reviewRepository->deleteReviewObject($review);
+        if ($success) {
             return response()->json(['message' => 'review deleted successfuly'], 200);
         } else {
-            return response()->json(['message' => 'review not found'], 404);
+            return response()->json(['message' => 'Failed to delete review'], 404);
         }
     }
     public function calcAverage($id)
