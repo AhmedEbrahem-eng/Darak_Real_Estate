@@ -36,15 +36,23 @@ class ReviewRepository implements ReviewRepositoryInterface
         }
         return null;
     }
+    public function updateReviewObject(Review $review, array $data)
+    {
+        $review->update($data);
+        return $review;
+    }
     public function deleteReview(int $id)
     {
         $review = Review::find($id);
-        $review['user_id'] = Auth::id();
         if ($review) {
             $review->delete();
             return true;
         }
         return null;
+    }
+    public function deleteReviewObject(Review $review)
+    {
+        return $review->delete();
     }
     public function showPropertyReviews(int $id)
     {
@@ -58,5 +66,9 @@ class ReviewRepository implements ReviewRepositoryInterface
             return null;
         }
         return round($averageRating);
+    }
+    public function findReview(int $id)
+    {
+        return Review::find($id);
     }
 }
