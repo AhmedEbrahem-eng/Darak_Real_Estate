@@ -38,6 +38,15 @@ class TourController extends Controller
 
     public function approveTour(Request $request, $id)
     {
+        $tour = $this->tourRepository->findTour($id);
+        if (!$tour) {
+            return response()->json(['message' => 'Tour not found'], 404);
+        }
+
+        if (Auth::user()->role !== 'admin' && Auth::id() !== $tour->property->user_id) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
         $request->validate([
             'tour_date' => 'required|exists:tour_dates,id,tour_id,' . $id,
         ]);
@@ -52,6 +61,15 @@ class TourController extends Controller
 
     public function declineTour(DeclineTourRequest $request,$id)
     {
+        $tour = $this->tourRepository->findTour($id);
+        if (!$tour) {
+            return response()->json(['message' => 'Tour not found'], 404);
+        }
+
+        if (Auth::user()->role !== 'admin' && Auth::id() !== $tour->property->user_id) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
         $message = $request->input('message');
         $success = $this->tourRepository->declineTour($id,$message);
         if (!$success) {
@@ -75,8 +93,17 @@ class TourController extends Controller
         ], 200);
     }
     public function deleteTour($id){
-        $tour= $this->tourRepository->deleteTour($id);
-        if($tour){
+        $tour = $this->tourRepository->findTour($id);
+        if (!$tour) {
+            return response()->json(['message' => 'Tour not found'], 404);
+        }
+
+        if (Auth::user()->role !== 'admin' && Auth::id() !== $tour->user_id && Auth::id() !== $tour->property->user_id) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        $success = $this->tourRepository->deleteTour($id);
+        if($success){
             return response()->json([
                 'message'=>'tour cancelled successfully',
             ], 200);
