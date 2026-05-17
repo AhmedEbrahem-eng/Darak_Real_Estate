@@ -2,6 +2,8 @@
 
 namespace App\Repositories\Contracts;
 
+use App\Models\Property;
+
 interface PropertyRepositoryInterface
 {
     public function getAllProperties();
@@ -14,6 +16,7 @@ interface PropertyRepositoryInterface
     public function searchProperties(array $filters);
     public function showUserProperties(int $id);
     public function updateProperty(array $data, string $slug);
-    public function delete(int $id);
+    public function delete(Property $property);
+    public function getPropertyById(int $id);
 
 }
