@@ -180,6 +180,12 @@ class PropertyRepository implements PropertyRepositoryInterface
     {
         return Property::where('user_id', $id)->whereIn('status',['accepted','pending'])->with('images', 'location', 'amenities', 'propertyType', 'user')->get();
     }
+
+    public function getPropertyById(int $id)
+    {
+        return Property::find($id);
+    }
+
     public function updateProperty(array $data, string $slug)
     {
         return DB::transaction(function () use ($data, $slug) {
@@ -213,9 +219,12 @@ class PropertyRepository implements PropertyRepositoryInterface
         });
     }
 
-    public function delete(int $id)
+    public function delete($property)
     {
-        $property = Property::find($id);
+        if (!$property instanceof Property) {
+            $property = Property::find($property);
+        }
+
         if (!$property) {
             return null;
         }

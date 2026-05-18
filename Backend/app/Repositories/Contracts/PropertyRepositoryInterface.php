@@ -14,6 +14,7 @@ interface PropertyRepositoryInterface
     public function searchProperties(array $filters);
     public function showUserProperties(int $id);
     public function updateProperty(array $data, string $slug);
-    public function delete(int $id);
+    public function getPropertyById(int $id);
+    public function delete($property);
 
 }
