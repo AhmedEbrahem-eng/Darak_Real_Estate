@@ -118,11 +118,21 @@ class PropertyController extends Controller
 
     public function deleteProperty($propertyId)
     {
-        $deleted = $this->propertyRepository->delete($propertyId);
+        $property = $this->propertyRepository->getPropertyById($propertyId);
+
+        if (!$property) {
+            return response()->json(['message' => 'property not found'], 404);
+        }
+
+        if (Auth::user()->role !== 'admin' && Auth::id() !== $property->user_id) {
+            return response()->json(['message' => 'You are not authorized to delete this property'], 403);
+        }
+
+        $deleted = $this->propertyRepository->delete($property);
         if ($deleted) {
             return response()->json(['message' => 'property deleted successfuly'], 200);
         } else {
-            return response()->json(['message' => 'property not found'], 200);
+            return response()->json(['message' => 'property not found'], 404);
         }
     }
 }
