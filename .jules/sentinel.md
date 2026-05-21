@@ -1,0 +1,4 @@
+## 2024-05-21 - IDOR Vulnerabilities in Property, Tour, and Review Management
+**Vulnerability:** Several sensitive endpoints (property deletion, tour approval/decline/deletion, review update/deletion) lacked both authentication and authorization checks, allowing any user (or even unauthenticated guests in some cases) to modify or delete resources they did not own.
+**Learning:** Routes were often defined outside of the `auth:sanctum` middleware group, and controllers lacked ownership checks, relying on repository methods that didn't verify the actor's identity.
+**Prevention:** Always wrap sensitive state-changing routes in authentication middleware. Implement robust ownership and role-based authorization checks in controllers before calling repository methods for modification or deletion. Use dedicated security tests to verify these constraints.

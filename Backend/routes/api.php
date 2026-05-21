@@ -99,7 +99,7 @@ Route::prefix('properties')->group(function(){
     Route::put('/{slug}',[PropertyController::class,'update'])->middleware('auth:sanctum');
     Route::post('/',[PropertyController::class,'store'])->middleware('auth:sanctum');
     Route::get('/search/filter',[PropertyController::class,'search']);
-    Route::delete('/{id}',[PropertyController::class,'deleteProperty']);
+    Route::delete('/{id}',[PropertyController::class,'deleteProperty'])->middleware('auth:sanctum');
     Route::put('/{propertyId}/status', [PropertyController::class, 'changePropertyStatus'])->middleware('admin','auth:sanctum');
 });
 Route::prefix('property-updates')->middleware('auth:sanctum')->group(function () {
@@ -142,8 +142,8 @@ Route::prefix('amenities')->group(function () {
 Route::prefix('reviews')->group(function () {
     Route::get('/', [ReviewController::class, 'show']);
     Route::post('/',[ReviewController::class, 'store'])->middleware('auth:sanctum');
-    Route::put('/{id}', [ReviewController::class, 'update']);
-    Route::delete('/{id}', [ReviewController::class, 'delete']);
+    Route::put('/{id}', [ReviewController::class, 'update'])->middleware('auth:sanctum');
+    Route::delete('/{id}', [ReviewController::class, 'delete'])->middleware('auth:sanctum');
     Route::get('property/{id}', [ReviewController::class, 'showPropertyReviews']);
     Route::get('Average/{id}', [ReviewController::class, 'calcAverage']);
     
@@ -160,8 +160,8 @@ Route::prefix('tour')->middleware(['auth:sanctum', 'checkTokenExpiry'])->group(f
     Route::get('/{status}', [TourController::class, 'getToursByStatus']);
     Route::delete('/{tourId}', [TourController::class, 'deleteTour']);
 });
-Route::post('/tours/{id}/approve', [TourController::class, 'approveTour']);
-Route::post('/tours/{id}/decline', [TourController::class, 'declineTour']);
+Route::post('/tours/{id}/approve', [TourController::class, 'approveTour'])->middleware('auth:sanctum');
+Route::post('/tours/{id}/decline', [TourController::class, 'declineTour'])->middleware('auth:sanctum');
 
 Route::get('locations',[LocationController::class,'index']);
 
