@@ -38,6 +38,15 @@ class TourController extends Controller
 
     public function approveTour(Request $request, $id)
     {
+        $tour = $this->tourRepository->findTour($id);
+        if (!$tour) {
+            return response()->json(['error' => 'Tour not found'], 404);
+        }
+
+        if (Auth::user()->role !== 'admin' && Auth::id() !== $tour->property->user_id) {
+            return response()->json(['error' => 'You are not allowed to approve this tour'], 403);
+        }
+
         $request->validate([
             'tour_date' => 'required|exists:tour_dates,id,tour_id,' . $id,
         ]);
@@ -52,6 +61,15 @@ class TourController extends Controller
 
     public function declineTour(DeclineTourRequest $request,$id)
     {
+        $tour = $this->tourRepository->findTour($id);
+        if (!$tour) {
+            return response()->json(['error' => 'Tour not found'], 404);
+        }
+
+        if (Auth::user()->role !== 'admin' && Auth::id() !== $tour->property->user_id) {
+            return response()->json(['error' => 'You are not allowed to decline this tour'], 403);
+        }
+
         $message = $request->input('message');
         $success = $this->tourRepository->declineTour($id,$message);
         if (!$success) {
@@ -75,6 +93,15 @@ class TourController extends Controller
         ], 200);
     }
     public function deleteTour($id){
+        $tourObj = $this->tourRepository->findTour($id);
+        if (!$tourObj) {
+            return response()->json(['message' => 'tour not found'], 404);
+        }
+
+        if (Auth::user()->role !== 'admin' && Auth::id() !== $tourObj->user_id && Auth::id() !== $tourObj->property->user_id) {
+            return response()->json(['message' => 'You are not allowed to cancel this tour'], 403);
+        }
+
         $tour= $this->tourRepository->deleteTour($id);
         if($tour){
             return response()->json([
@@ -83,7 +110,7 @@ class TourController extends Controller
         }else{
             return response()->json([
                 'message'=>'tour not found',
-            ], 400);
+            ], 404);
         }
     }
 
