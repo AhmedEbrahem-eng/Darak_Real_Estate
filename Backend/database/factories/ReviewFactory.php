@@ -19,8 +19,8 @@ class ReviewFactory extends Factory
     public function definition(): array
     {
         return [
-            'user_id' => User::pluck('id')->random(),
-            'property_id' => Property::pluck('id')->random(),
+            'user_id' => User::factory(),
+            'property_id' => Property::factory(),
             'content' => $this->faker->paragraph,
             'rate' => $this->faker->numberBetween(1, 5),
             'created_at' => now(),
