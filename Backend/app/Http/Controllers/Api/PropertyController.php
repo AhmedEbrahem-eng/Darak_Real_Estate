@@ -108,21 +108,39 @@ class PropertyController extends Controller
     }
     public function update(UpdatePropertyRequest $request, $slug)
     {
-        $validatedData = $request->validated();
-        $property = $this->propertyRepository->updateProperty($validatedData, $slug);
-        if(!$property){ 
-            return response()->json(['message' => 'Property or admin not found'], 400); 
+        $property = $this->propertyRepository->getPropertyBySlug($slug);
+        if (!$property) {
+            return response()->json(['message' => 'Property not found'], 404);
         }
-        return response()->json(['message' => 'Property updated successfully', 'data' => new PropertyResource($property)], 200);
+
+        if (Auth::user()->role !== 'admin' && Auth::id() !== $property->user_id) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        $validatedData = $request->validated();
+        $updatedProperty = $this->propertyRepository->updateProperty($validatedData, $slug);
+        if (!$updatedProperty) {
+            return response()->json(['message' => 'Property or admin not found'], 400);
+        }
+        return response()->json(['message' => 'Property updated successfully', 'data' => new PropertyResource($updatedProperty)], 200);
     }
 
     public function deleteProperty($propertyId)
     {
+        $property = $this->propertyRepository->getPropertyById($propertyId);
+        if (!$property) {
+            return response()->json(['message' => 'property not found'], 404);
+        }
+
+        if (Auth::user()->role !== 'admin' && Auth::id() !== $property->user_id) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
         $deleted = $this->propertyRepository->delete($propertyId);
         if ($deleted) {
             return response()->json(['message' => 'property deleted successfuly'], 200);
         } else {
-            return response()->json(['message' => 'property not found'], 200);
+            return response()->json(['message' => 'property not found'], 404);
         }
     }
 }

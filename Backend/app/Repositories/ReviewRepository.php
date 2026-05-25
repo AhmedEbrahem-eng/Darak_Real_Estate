@@ -59,4 +59,9 @@ class ReviewRepository implements ReviewRepositoryInterface
         }
         return round($averageRating);
     }
+
+    public function findReview(int $id)
+    {
+        return Review::find($id);
+    }
 }
