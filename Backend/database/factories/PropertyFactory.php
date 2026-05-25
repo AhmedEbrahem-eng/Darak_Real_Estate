@@ -28,10 +28,10 @@ class PropertyFactory extends Factory
             'num_of_bathrooms' => $this->faker->numberBetween(1, 5),
             'area' => $this->faker->randomFloat(2, 50, 500),
             'price' => $this->faker->numberBetween(10000, 10000000),
-            'location_id' => Location::pluck('id')->random(),
-            'property_type_id' => PropertyType::pluck('id')->random(),
+            'location_id' => Location::factory(),
+            'property_type_id' => PropertyType::factory(),
             'status'=> $this->faker->randomElement(["accepted","rejected","pending"]),
-            'user_id' => User::pluck('id')->random(),
+            'user_id' => User::factory(),
             'availability' => $this->faker->randomElement(['available', 'unavailable']),
             'listing_type' => $this->faker->randomElement(['rent', 'buy']),
         ];
