@@ -18,7 +18,7 @@ class TourDateFactory extends Factory
     public function definition(): array
     {
         return [
-            'tour_id' => $this->faker->randomElement(Tour::pluck('id')->toArray()),
+            'tour_id' => Tour::factory(),
             'date' => $this->faker->dateTimeBetween('+1 day', '+1 week'),
             'approved' => false, 
             'created_at' => $this->faker->dateTimeBetween('-1 month', 'now'),

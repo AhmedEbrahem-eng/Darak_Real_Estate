@@ -180,4 +180,8 @@ class TourRepository implements TourRepositoryInterface
             ->with(['user', 'property', 'tourDates'])
             ->get();
     }
+    public function findTour(int $id)
+    {
+        return Tour::with('property')->find($id);
+    }
 }
