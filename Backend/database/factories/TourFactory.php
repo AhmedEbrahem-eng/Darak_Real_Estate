@@ -19,8 +19,8 @@ class TourFactory extends Factory
     public function definition(): array
     {
         return [
-            'user_id' => $this->faker->randomElement(User::where('role', 'user')->pluck('id')->toArray()),
-            'property_id' => $this->faker->randomElement(Property::pluck('id')->toArray()),
+            'user_id' => User::factory(),
+            'property_id' => Property::factory(),
             'status' => $this->faker->randomElement(['pending', 'approved', 'declined']),
             'created_at' => $this->faker->dateTimeBetween('-1 month', 'now'),
             'updated_at' => $this->faker->dateTimeBetween('-1 month', 'now'),
