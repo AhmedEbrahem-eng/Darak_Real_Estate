@@ -20,7 +20,7 @@ class TourObserver
         $landlord = $property->user;
 
         Notification::create([
-            'from_user_id' => Auth::id(),
+            'from_user_id' => Auth::id() ?? $tour->user_id,
             'to_user_id' => $landlord->id,
             'tour_id' => $tour->id,
             'property_id' => $tour->property_id,
@@ -51,7 +51,7 @@ class TourObserver
         $user = Auth::user();
 
         Notification::create([
-            'from_user_id' => Auth::id(),
+            'from_user_id' => Auth::id() ?? $tour->user_id,
             'to_user_id' => $landlord->id,
             'property_id' => $property->id,
             'tour_id' => $tour->id,

@@ -17,6 +17,11 @@ use Illuminate\Support\Facades\Mail;
 
 class TourRepository implements TourRepositoryInterface
 {
+    public function findTour(int $id)
+    {
+        return Tour::find($id);
+    }
+
     public function createTour(array $data)
     {
         return DB::transaction(function () use ($data) {
