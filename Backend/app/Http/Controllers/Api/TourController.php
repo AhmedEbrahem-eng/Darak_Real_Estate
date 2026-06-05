@@ -38,6 +38,16 @@ class TourController extends Controller
 
     public function approveTour(Request $request, $id)
     {
+        $tour = $this->tourRepository->findTour($id);
+        if (!$tour) {
+            return response()->json(['error' => 'Tour not found'], 404);
+        }
+
+        // Authorization: Check if the authenticated user is the landlord of the property
+        if (Auth::user()->role !== 'admin' && $tour->property->user_id !== Auth::id()) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
         $request->validate([
             'tour_date' => 'required|exists:tour_dates,id,tour_id,' . $id,
         ]);
@@ -52,6 +62,16 @@ class TourController extends Controller
 
     public function declineTour(DeclineTourRequest $request,$id)
     {
+        $tour = $this->tourRepository->findTour($id);
+        if (!$tour) {
+            return response()->json(['error' => 'Tour not found'], 404);
+        }
+
+        // Authorization: Check if the authenticated user is the landlord of the property
+        if (Auth::user()->role !== 'admin' && $tour->property->user_id !== Auth::id()) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
         $message = $request->input('message');
         $success = $this->tourRepository->declineTour($id,$message);
         if (!$success) {
