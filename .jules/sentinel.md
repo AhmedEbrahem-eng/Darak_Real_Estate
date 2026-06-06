@@ -1,0 +1,4 @@
+## 2025-05-15 - [BOLA and Missing Middleware on Sensitive Endpoints]
+**Vulnerability:** Multiple administrative and resource-management endpoints were either completely unprotected (missing middleware) or lacked ownership checks (Broken Object Level Authorization), allowing any authenticated user (and sometimes unauthenticated users) to delete properties, modify reviews, or approve/decline tours.
+**Learning:** Middleware alone is insufficient for resources that should only be manageable by their owners (like properties and reviews). Relying on the presence of an ID in the URL without verifying the requester's relationship to that ID is a common BOLA pattern.
+**Prevention:** Always combine route-level authentication/authorization middleware with controller-level ownership checks (BOLA protection). Ensure all administrative routes are explicitly wrapped in `admin` middleware. Use automated security tests that specifically target these bypass scenarios.

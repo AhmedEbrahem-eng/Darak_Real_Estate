@@ -38,13 +38,22 @@ class TourController extends Controller
 
     public function approveTour(Request $request, $id)
     {
+        $tour = $this->tourRepository->findTour($id);
+        if (!$tour) {
+            return response()->json(['error' => 'Tour not found'], 404);
+        }
+
+        if (Auth::id() !== $tour->property->user_id) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
         $request->validate([
             'tour_date' => 'required|exists:tour_dates,id,tour_id,' . $id,
         ]);
 
         $success = $this->tourRepository->approveTour($id, $request->tour_date);
         if (!$success) {
-            return response()->json(['error' => 'Tour request already approved'], 404);
+            return response()->json(['error' => 'Tour request already approved'], 400);
         }
 
         return response()->json(['message' => 'Tour approved successfully'], 200);
@@ -52,10 +61,19 @@ class TourController extends Controller
 
     public function declineTour(DeclineTourRequest $request,$id)
     {
+        $tour = $this->tourRepository->findTour($id);
+        if (!$tour) {
+            return response()->json(['error' => 'Tour not found'], 404);
+        }
+
+        if (Auth::id() !== $tour->property->user_id) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
         $message = $request->input('message');
         $success = $this->tourRepository->declineTour($id,$message);
         if (!$success) {
-            return response()->json(['error' => 'Tour request already declined'], 404);
+            return response()->json(['error' => 'Tour request already declined'], 400);
         }
 
         return response()->json(['message' => 'Tour cancelled successfully'], 200);
