@@ -222,4 +222,9 @@ class PropertyRepository implements PropertyRepositoryInterface
         $property->delete();
         return true;
     }
+
+    public function getPropertyById(int $id)
+    {
+        return Property::find($id);
+    }
 }
