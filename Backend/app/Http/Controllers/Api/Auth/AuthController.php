@@ -34,9 +34,10 @@ class AuthController extends Controller
         } 
         catch (\Throwable $th) 
         {
+            \Log::error($th);
             return response()->json([
                 'success' => false,
-                'message' => $th->getMessage(),
+                'message' => "An internal server error occurred.",
             ], 500);
         }
     }
@@ -71,9 +72,10 @@ class AuthController extends Controller
         }
         catch (\Throwable $th) 
         {
+            \Log::error($th);
             return response()->json([
                 'success' => false,
-                'message'=> $th->getMessage(),
+                'message'=> "An internal server error occurred.",
             ], 500);
         }
     }
@@ -91,9 +93,10 @@ class AuthController extends Controller
         }
         catch (\Throwable $th) 
         {
+            \Log::error($th);
             return response()->json([
                 'success' => false,
-                'message'=> $th->getMessage(),
+                'message'=> "An internal server error occurred.",
             ], 500);
         }
     }
@@ -111,9 +114,10 @@ class AuthController extends Controller
         }
         catch (\Throwable $th) 
         {
+            \Log::error($th);
             return response()->json([
                 'success' => false,
-                'message'=> $th->getMessage(),
+                'message'=> "An internal server error occurred.",
             ], 500);
         }
     }
