@@ -49,6 +49,10 @@ class TourRepository implements TourRepositoryInterface
         });
     }
 
+    public function findTour(int $id)
+    {
+        return Tour::find($id);
+    }
 
     public function approveTour(int $id, int $tourDateId)
     {
