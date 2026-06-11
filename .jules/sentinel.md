@@ -1,0 +1,4 @@
+## 2026-06-11 - [CRITICAL] Registration Privilege Escalation and Unprotected Admin Routes
+**Vulnerability:** The 'register' endpoint allowed users to self-assign the 'admin' role by including it in the request. Additionally, several administrative routes (dashboard, reports, amenities) were completely unprotected, allowing any user (or unauthenticated visitor) to access them.
+**Learning:** Over-reliance on whitelisting in FormRequests without considering the sensitivity of certain values (like 'admin' role) can lead to privilege escalation. Route-level protection must be explicitly defined for all administrative actions.
+**Prevention:** Always exclude administrative roles from public registration forms. Secure all administrative routes with 'admin' and 'auth' middleware by default, and only selectively permit access if absolutely necessary.
