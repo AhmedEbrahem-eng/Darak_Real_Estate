@@ -1,0 +1,4 @@
+## 2024-05-23 - Broken Access Control on Administrative and Management Routes
+**Vulnerability:** Multiple administrative routes (dashboard, reason-reports, report management, amenity management) and tour approval/decline endpoints were completely unprotected by authentication or authorization middleware, allowing any guest or unauthorized user to access or modify sensitive data.
+**Learning:** Route groups in Laravel can easily be left unprotected if middleware is not explicitly applied to the group or individual routes. The use of `withoutMiddleware` is a useful pattern to allow specific exceptions within a protected group.
+**Prevention:** Always verify that every route in `api.php` is wrapped in at least `auth:sanctum` unless it is explicitly intended to be public. Use automated feature tests to assert that sensitive routes return 401/403 for guests and non-admin users.
