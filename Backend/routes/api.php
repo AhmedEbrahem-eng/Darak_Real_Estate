@@ -99,7 +99,7 @@ Route::prefix('properties')->group(function(){
     Route::put('/{slug}',[PropertyController::class,'update'])->middleware('auth:sanctum');
     Route::post('/',[PropertyController::class,'store'])->middleware('auth:sanctum');
     Route::get('/search/filter',[PropertyController::class,'search']);
-    Route::delete('/{id}',[PropertyController::class,'deleteProperty']);
+    Route::delete('/{id}',[PropertyController::class,'deleteProperty'])->middleware('auth:sanctum');
     Route::put('/{propertyId}/status', [PropertyController::class, 'changePropertyStatus'])->middleware('admin','auth:sanctum');
 });
 Route::prefix('property-updates')->middleware('auth:sanctum')->group(function () {
