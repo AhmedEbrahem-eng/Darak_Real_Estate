@@ -7,6 +7,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Laravel\Socialite\Facades\Socialite;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class SocialLoginController extends Controller
 {
@@ -27,9 +29,10 @@ class SocialLoginController extends Controller
         } 
         catch (\Throwable $th) 
         {
+            Log::error($th);
             return response()->json([
                 'success' => false,
-                'message' => $th->getMessage(),
+                'message' => 'An error occurred',
             ], 500);
         }
     }
@@ -48,7 +51,7 @@ class SocialLoginController extends Controller
             'social_id' => $socialUser->id,
             'social_type' => $provider,
             'role' => 'user',
-            'password' => Hash::make('my-' . $provider),
+            'password' => Hash::make(Str::random(16)),
         ]);
     }
 

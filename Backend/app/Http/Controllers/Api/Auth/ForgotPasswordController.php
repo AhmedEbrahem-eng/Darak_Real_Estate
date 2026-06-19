@@ -8,7 +8,8 @@ use App\Models\User;
 use App\Models\PasswordResetToken;
 use Illuminate\Support\Str;
 use Illuminate\Support\Carbon;
-use Mail;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Log;
 
 class ForgotPasswordController extends Controller
 {
@@ -50,9 +51,10 @@ class ForgotPasswordController extends Controller
         }
         catch (\Throwable $th) 
         {
+            Log::error($th);
             return response()->json([
                 'success' => false,
-                'message'=> $th->getMessage(),
+                'message'=> 'An error occurred',
             ], 500);
         }
     }
