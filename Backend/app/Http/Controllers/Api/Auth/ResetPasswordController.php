@@ -7,6 +7,7 @@ use App\Http\Requests\Auth\ResetPasswordRequest;
 use App\Models\User;
 use App\Models\PasswordResetToken;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 
 class ResetPasswordController extends Controller
 {
@@ -46,9 +47,10 @@ class ResetPasswordController extends Controller
             ], 200);
         } 
         catch (\Throwable $th) {
+            Log::error($th);
             return response()->json([
                 'success' => false,
-                'message' => $th->getMessage(),
+                'message' => 'An error occurred',
             ], 500);
         }
     }
