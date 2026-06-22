@@ -44,19 +44,39 @@ class ReviewController extends Controller
     }
     public function update(UpdateReviewRequest $request, $id)
     {
+        $review = $this->reviewRepository->findReview($id);
+
+        if (!$review) {
+            return response()->json(['message' => 'Review not found'], 404);
+        }
+
+        if (auth()->user()->role !== 'admin' && $review->user_id !== auth()->id()) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
         $review = $this->reviewRepository->updateReview($id, $request->validated());
         if ($review) {
             return response()->json(['data' => new ReviewResource($review)], 200);
         } else {
-            return response()->json(['message' => 'Failed to update review or review not found'], 404);
+            return response()->json(['message' => 'Failed to update review'], 500);
         }
     }
     public function delete($id){
-        $review = $this->reviewRepository->deleteReview($id);
-        if ($review) {
+        $review = $this->reviewRepository->findReview($id);
+
+        if (!$review) {
+            return response()->json(['message' => 'Review not found'], 404);
+        }
+
+        if (auth()->user()->role !== 'admin' && $review->user_id !== auth()->id()) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        $result = $this->reviewRepository->deleteReview($id);
+        if ($result) {
             return response()->json(['message' => 'review deleted successfuly'], 200);
         } else {
-            return response()->json(['message' => 'review not found'], 404);
+            return response()->json(['message' => 'Failed to delete review'], 500);
         }
     }
     public function calcAverage($id)
