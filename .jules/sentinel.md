@@ -1,0 +1,4 @@
+## 2026-06-24 - [IDOR in Review Management]
+**Vulnerability:** Review update and delete endpoints lacked authorization checks and authentication middleware, allowing any user (or guest) to modify or delete any review by ID.
+**Learning:** Repository methods should not attempt to enforce authorization by mutating the model instance (e.g., setting `user_id` to the current user before deletion) as it's both ineffective and potentially corruptive. Authorization belongs in the controller or middleware layer using the requestor's identity.
+**Prevention:** Always apply authentication middleware to state-changing routes and verify ownership or administrative privileges in the controller before invoking repository actions. Use dedicated feature tests to verify 403 Forbidden responses for unauthorized attempts.
