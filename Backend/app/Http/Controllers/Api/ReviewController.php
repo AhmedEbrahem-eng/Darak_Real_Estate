@@ -44,16 +44,39 @@ class ReviewController extends Controller
     }
     public function update(UpdateReviewRequest $request, $id)
     {
+        $review = $this->reviewRepository->findReview($id);
+
+        if (!$review) {
+            return response()->json(['message' => 'Review not found'], 404);
+        }
+
+        // Authorization check: only the owner or an admin can update
+        if (auth()->id() !== $review->user_id && auth()->user()->role !== 'admin') {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
         $review = $this->reviewRepository->updateReview($id, $request->validated());
         if ($review) {
             return response()->json(['data' => new ReviewResource($review)], 200);
         } else {
-            return response()->json(['message' => 'Failed to update review or review not found'], 404);
+            return response()->json(['message' => 'Failed to update review'], 404);
         }
     }
-    public function delete($id){
-        $review = $this->reviewRepository->deleteReview($id);
-        if ($review) {
+    public function delete($id)
+    {
+        $review = $this->reviewRepository->findReview($id);
+
+        if (!$review) {
+            return response()->json(['message' => 'Review not found'], 404);
+        }
+
+        // Authorization check: only the owner or an admin can delete
+        if (auth()->id() !== $review->user_id && auth()->user()->role !== 'admin') {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        $deleted = $this->reviewRepository->deleteReview($id);
+        if ($deleted) {
             return response()->json(['message' => 'review deleted successfuly'], 200);
         } else {
             return response()->json(['message' => 'review not found'], 404);
