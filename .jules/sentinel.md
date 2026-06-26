@@ -1,0 +1,4 @@
+## 2024-05-23 - [Administrative Access & Review IDOR]
+**Vulnerability:** Administrative endpoints (Dashboard, Reports, Amenity management) were accessible to guests and regular users. Review update and delete endpoints lacked ownership checks, allowing any authenticated user to modify or delete others' reviews.
+**Learning:** Default resource routing and prefixing without explicit middleware application can leave sensitive administrative endpoints exposed. IDOR vulnerabilities often occur when assuming the authenticated user is the legitimate owner of the resource being accessed.
+**Prevention:** Always group administrative routes under 'admin' and 'auth' middleware. Implement explicit ownership checks in controllers or through Laravel Policies/Request Authorization before performing state-changing operations on user-owned resources.
