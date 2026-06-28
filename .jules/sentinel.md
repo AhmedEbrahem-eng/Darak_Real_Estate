@@ -1,0 +1,4 @@
+## 2024-06-28 - [IDOR in Review Modification]
+**Vulnerability:** Review update and delete endpoints (`PUT /api/reviews/{id}` and `DELETE /api/reviews/{id}`) were publicly accessible and lacked ownership or authorization checks, allowing any user (or even guests) to modify or delete any review in the system.
+**Learning:** Routes defined without middleware in Laravel are public by default. Relying solely on the presence of an ID in the request without verifying the authenticated user's relationship to the resource (IDOR) allows for unauthorized data modification.
+**Prevention:** Always wrap sensitive state-changing routes (POST, PUT, DELETE) in authentication middleware. Implement explicit authorization checks in controllers or policies to verify ownership or sufficient permissions before performing actions on specific resource instances.
