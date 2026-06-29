@@ -1,0 +1,4 @@
+## 2026-06-29 - [HIGH] IDOR and Unauthenticated Access in Tour Management
+**Vulnerability:** Tour approval, decline, and deletion endpoints were either entirely public or lacked ownership checks, allowing any user (authenticated or not) to manipulate tour requests for any property.
+**Learning:** Consolidating routes into middleware groups can sometimes lead to accidental prefix changes if not careful (e.g., `/tours/` vs `/tour/`), which breaks frontend integration. Always verify existing frontend service calls when changing route structures.
+**Prevention:** Always wrap data-modifying endpoints in authentication middleware. Implement explicit ownership checks in controllers (comparing `Auth::id()` with the resource owner's ID) before performing actions. Use a `findResource` method in repositories to facilitate these checks without duplicating query logic.

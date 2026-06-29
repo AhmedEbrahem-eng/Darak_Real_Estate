@@ -38,6 +38,14 @@ class TourController extends Controller
 
     public function approveTour(Request $request, $id)
     {
+        $tour = $this->tourRepository->findTour($id);
+        if (!$tour) {
+            return response()->json(['error' => 'Tour not found'], 404);
+        }
+        if (Auth::id() !== $tour->property->user_id) {
+            return response()->json(['message' => 'You are not allowed to access this page'], 403);
+        }
+
         $request->validate([
             'tour_date' => 'required|exists:tour_dates,id,tour_id,' . $id,
         ]);
@@ -50,10 +58,18 @@ class TourController extends Controller
         return response()->json(['message' => 'Tour approved successfully'], 200);
     }
 
-    public function declineTour(DeclineTourRequest $request,$id)
+    public function declineTour(DeclineTourRequest $request, $id)
     {
+        $tour = $this->tourRepository->findTour($id);
+        if (!$tour) {
+            return response()->json(['error' => 'Tour not found'], 404);
+        }
+        if (Auth::id() !== $tour->property->user_id) {
+            return response()->json(['message' => 'You are not allowed to access this page'], 403);
+        }
+
         $message = $request->input('message');
-        $success = $this->tourRepository->declineTour($id,$message);
+        $success = $this->tourRepository->declineTour($id, $message);
         if (!$success) {
             return response()->json(['error' => 'Tour request already declined'], 404);
         }
@@ -74,15 +90,25 @@ class TourController extends Controller
             'tours' => TourResource::collection($tours),
         ], 200);
     }
-    public function deleteTour($id){
-        $tour= $this->tourRepository->deleteTour($id);
-        if($tour){
+    public function deleteTour($id)
+    {
+        $tour = $this->tourRepository->findTour($id);
+        if (!$tour) {
+            return response()->json(['message' => 'tour not found'], 404);
+        }
+
+        if (Auth::id() !== $tour->user_id && Auth::id() !== $tour->property->user_id) {
+            return response()->json(['message' => 'You are not allowed to access this page'], 403);
+        }
+
+        $success = $this->tourRepository->deleteTour($id);
+        if ($success) {
             return response()->json([
-                'message'=>'tour cancelled successfully',
+                'message' => 'tour cancelled successfully',
             ], 200);
-        }else{
+        } else {
             return response()->json([
-                'message'=>'tour not found',
+                'message' => 'tour not found',
             ], 400);
         }
     }
