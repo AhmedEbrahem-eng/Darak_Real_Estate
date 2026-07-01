@@ -12,6 +12,10 @@ class ReviewRepository implements ReviewRepositoryInterface
     {
         return Review::with(['user', 'property', 'reactions', 'replies'])->get();
     }
+    public function findReview(int $id)
+    {
+        return Review::find($id);
+    }
     public function storeReview(array $data)
     {
         $userId = Auth::id();
@@ -27,24 +31,14 @@ class ReviewRepository implements ReviewRepositoryInterface
         $data['user_id'] = $userId;
         return Review::create($data);
     }
-    public function updateReview(int $id, array $data)
+    public function updateReview(Review $review, array $data)
     {
-        $review = Review::find($id);
-        if ($review) {
-            $review->update($data);
-            return $review;
-        }
-        return null;
+        $review->update($data);
+        return $review;
     }
-    public function deleteReview(int $id)
+    public function deleteReview(Review $review)
     {
-        $review = Review::find($id);
-        $review['user_id'] = Auth::id();
-        if ($review) {
-            $review->delete();
-            return true;
-        }
-        return null;
+        return $review->delete();
     }
     public function showPropertyReviews(int $id)
     {

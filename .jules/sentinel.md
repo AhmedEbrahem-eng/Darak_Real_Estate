@@ -1,0 +1,4 @@
+## 2026-07-01 - [IDOR in Review Modification]
+**Vulnerability:** Insecure Direct Object Reference (IDOR) and Broken Function Level Authorization (BFLA) in `ReviewController`.
+**Learning:** The `update` and `delete` methods in `ReviewController` were publicly accessible and did not verify if the authenticated user was the owner of the review or an administrator. Additionally, `ReviewRepository::deleteReview` had a bug where it would overwrite the `user_id` of the review before deletion, which was likely a misimplemented security check.
+**Prevention:** Always wrap sensitive modification/deletion routes in authentication middleware and implement explicit ownership or role-based authorization checks in the controller. Avoid putting business/authorization logic in repositories where possible to keep them focused on data access.
