@@ -141,12 +141,14 @@ Route::prefix('amenities')->group(function () {
 
 Route::prefix('reviews')->group(function () {
     Route::get('/', [ReviewController::class, 'show']);
-    Route::post('/',[ReviewController::class, 'store'])->middleware('auth:sanctum');
-    Route::put('/{id}', [ReviewController::class, 'update']);
-    Route::delete('/{id}', [ReviewController::class, 'delete']);
+    Route::post('/', [ReviewController::class, 'store'])->middleware('auth:sanctum');
     Route::get('property/{id}', [ReviewController::class, 'showPropertyReviews']);
     Route::get('Average/{id}', [ReviewController::class, 'calcAverage']);
-    
+
+    Route::middleware(['auth:sanctum', 'checkTokenExpiry'])->group(function () {
+        Route::put('/{id}', [ReviewController::class, 'update']);
+        Route::delete('/{id}', [ReviewController::class, 'delete']);
+    });
 });
 Route::prefix('reactions')->group(function () {
     Route::post('/',[ReactionController::class, 'store'])->middleware('auth:sanctum');
