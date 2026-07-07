@@ -1,0 +1,4 @@
+## 2024-05-22 - [Insecure Direct Object Reference (IDOR) in Reviews]
+**Vulnerability:** The review update and deletion endpoints (`PUT/DELETE /api/reviews/{id}`) were entirely unprotected by authentication and did not verify ownership. Any guest or user could modify or delete any review by guessing its ID.
+**Learning:** Even when using resource-like patterns, explicit ownership checks are required in the controller if not handled by middleware or policies. A buggy line in the repository (`$review['user_id'] = Auth::id()`) before deletion was also present, which didn't actually prevent deletion but was logically incorrect.
+**Prevention:** Always group modification/deletion routes under authentication middleware and implement authorization logic (Ownership check or Admin role) before performing the action in the repository.
