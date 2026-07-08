@@ -5,6 +5,7 @@ namespace App\Repositories\Contracts;
 interface PropertyRepositoryInterface
 {
     public function getAllProperties();
+    public function getPropertyById(int $id);
     public function getPropertyBySlug(string $slug);
     public function getLatestProperties(string $listing_type);
     public function getAcceptedProperties();

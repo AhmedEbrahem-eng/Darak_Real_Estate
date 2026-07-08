@@ -22,7 +22,12 @@ class PropertyRepository implements PropertyRepositoryInterface
 {
     public function getAllProperties()
     {
-        return Property::with('images', 'location', 'amenities', 'propertyType', 'user')->where('status','accepted')->get();
+        return Property::with('images', 'location', 'amenities', 'propertyType', 'user')->where('status', 'accepted')->get();
+    }
+
+    public function getPropertyById(int $id)
+    {
+        return Property::find($id);
     }
 
     public function getPropertyBySlug(string $slug)
