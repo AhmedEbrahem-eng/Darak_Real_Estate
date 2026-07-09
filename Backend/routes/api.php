@@ -109,7 +109,7 @@ Route::prefix('property-updates')->middleware('auth:sanctum')->group(function ()
     Route::post('/accepted/{id}', [PropertyUpdateController::class, 'approve']);
     Route::post('/rejected/{id}', [PropertyUpdateController::class, 'reject']);
 });
-Route::delete('images/{imageId}', [ImageController::class, 'deleteImage']);
+Route::delete('images/{imageId}', [ImageController::class, 'deleteImage'])->middleware(['auth:sanctum', 'checkTokenExpiry']);
 
 Route::prefix('notifications')->middleware(['auth:sanctum', 'checkTokenExpiry'])->group(function(){
     Route::get('/landlord',[NotificationController::class,'showLandlordNotifications']);
@@ -142,8 +142,8 @@ Route::prefix('amenities')->group(function () {
 Route::prefix('reviews')->group(function () {
     Route::get('/', [ReviewController::class, 'show']);
     Route::post('/',[ReviewController::class, 'store'])->middleware('auth:sanctum');
-    Route::put('/{id}', [ReviewController::class, 'update']);
-    Route::delete('/{id}', [ReviewController::class, 'delete']);
+    Route::put('/{id}', [ReviewController::class, 'update'])->middleware(['auth:sanctum', 'checkTokenExpiry']);
+    Route::delete('/{id}', [ReviewController::class, 'delete'])->middleware(['auth:sanctum', 'checkTokenExpiry']);
     Route::get('property/{id}', [ReviewController::class, 'showPropertyReviews']);
     Route::get('Average/{id}', [ReviewController::class, 'calcAverage']);
     

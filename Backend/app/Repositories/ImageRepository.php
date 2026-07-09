@@ -32,4 +32,9 @@ class ImageRepository implements ImageRepositoryInterface
         throw new \Exception('Failed to delete image: ' . $e->getMessage());
     }
 }
+
+    public function findImage(int $imageId)
+    {
+        return PropertyImage::with('property')->find($imageId);
+    }
 }
