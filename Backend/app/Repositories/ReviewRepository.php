@@ -8,6 +8,10 @@ use Illuminate\Support\Facades\Auth;
 
 class ReviewRepository implements ReviewRepositoryInterface
 {
+    public function findReview(int $id)
+    {
+        return Review::find($id);
+    }
     public function showReviews()
     {
         return Review::with(['user', 'property', 'reactions', 'replies'])->get();
@@ -39,7 +43,6 @@ class ReviewRepository implements ReviewRepositoryInterface
     public function deleteReview(int $id)
     {
         $review = Review::find($id);
-        $review['user_id'] = Auth::id();
         if ($review) {
             $review->delete();
             return true;

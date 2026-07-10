@@ -4,6 +4,7 @@ namespace App\Repositories\Contracts;
 
 interface ReviewRepositoryInterface
 {
+    public function findReview(int $id);
     public function showReviews();
     public function storeReview(array $data);
     public function updateReview(int $id, array $data);
