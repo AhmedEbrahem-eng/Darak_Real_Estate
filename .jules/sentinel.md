@@ -1,0 +1,4 @@
+## 2025-05-14 - [IDOR in Image Deletion]
+**Vulnerability:** Insecure Direct Object Reference (IDOR) on the image deletion endpoint. The `DELETE /api/images/{imageId}` route was completely unprotected, and the `ImageController@deleteImage` method lacked authentication and authorization checks, allowing any user (or guest) to delete any property image.
+**Learning:** Destructive operations on child resources (like images belonging to a property) must verify the ownership of the parent resource. Using repository methods that load necessary relationships (e.g., `findImage` with `property`) is essential for efficient authorization checks in the controller.
+**Prevention:** Apply `auth:sanctum` and `checkTokenExpiry` middleware to all routes that perform state changes. Implement controller-level authorization that checks if the authenticated user is an administrator or the owner of the resource (or its parent).
