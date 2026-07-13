@@ -7,6 +7,7 @@ use App\Http\Requests\Reviews\StoreReviewRequest;
 use App\Http\Requests\Reviews\UpdateReviewRequest;
 use App\Http\Resources\ReviewResource;
 use App\Repositories\Contracts\ReviewRepositoryInterface;
+use Illuminate\Support\Facades\Auth;
 
 class ReviewController extends Controller
 {
@@ -44,20 +45,31 @@ class ReviewController extends Controller
     }
     public function update(UpdateReviewRequest $request, $id)
     {
-        $review = $this->reviewRepository->updateReview($id, $request->validated());
-        if ($review) {
-            return response()->json(['data' => new ReviewResource($review)], 200);
-        } else {
-            return response()->json(['message' => 'Failed to update review or review not found'], 404);
+        $review = $this->reviewRepository->findReview($id);
+        if (!$review) {
+            return response()->json(['message' => 'Review not found'], 404);
         }
+
+        if (Auth::id() !== $review->user_id && Auth::user()->role !== 'admin') {
+            return response()->json(['message' => 'You are not authorized to update this review'], 403);
+        }
+
+        $updatedReview = $this->reviewRepository->updateReview($review, $request->validated());
+        return response()->json(['data' => new ReviewResource($updatedReview)], 200);
     }
-    public function delete($id){
-        $review = $this->reviewRepository->deleteReview($id);
-        if ($review) {
-            return response()->json(['message' => 'review deleted successfuly'], 200);
-        } else {
-            return response()->json(['message' => 'review not found'], 404);
+    public function delete($id)
+    {
+        $review = $this->reviewRepository->findReview($id);
+        if (!$review) {
+            return response()->json(['message' => 'Review not found'], 404);
         }
+
+        if (Auth::id() !== $review->user_id && Auth::user()->role !== 'admin') {
+            return response()->json(['message' => 'You are not authorized to delete this review'], 403);
+        }
+
+        $this->reviewRepository->deleteReview($review);
+        return response()->json(['message' => 'Review deleted successfully'], 200);
     }
     public function calcAverage($id)
     {
