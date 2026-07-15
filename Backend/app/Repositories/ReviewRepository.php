@@ -36,10 +36,13 @@ class ReviewRepository implements ReviewRepositoryInterface
         }
         return null;
     }
+    public function findReview(int $id)
+    {
+        return Review::find($id);
+    }
     public function deleteReview(int $id)
     {
         $review = Review::find($id);
-        $review['user_id'] = Auth::id();
         if ($review) {
             $review->delete();
             return true;
