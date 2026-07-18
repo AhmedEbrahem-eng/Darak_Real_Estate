@@ -1,0 +1,4 @@
+## 2026-07-14 - [Privilege Escalation via Uncontrolled Role Input in User Registration]
+**Vulnerability:** The registration endpoint `/api/register` allowed users to specify arbitrary role values, including `admin`, via the `role` input field, enabling privilege escalation to system administrator access.
+**Learning:** Overly permissive input validation in `RegisterUserRequest` explicitly whitelisted `admin` in the registration validation rules. This allowed malicious requests to bypass intended privilege structures during sign-up.
+**Prevention:** Never include elevated roles such as `admin` in public-facing, self-service registration forms or validation Whitelists. Enforce strict checks so that self-registration defaults to lowest privilege tiers or explicitly requires secure invitation/administration controls to assign administrative roles.
