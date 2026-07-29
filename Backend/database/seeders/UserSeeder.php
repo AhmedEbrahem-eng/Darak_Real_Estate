@@ -12,6 +12,23 @@ class UserSeeder extends Seeder
 {
     public function run()
     {
+        // Seed default admin user securely
+        DB::table('users')->updateOrInsert(
+            ['email' => 'admin@example.com'],
+            [
+                'first_name' => 'Admin',
+                'last_name' => 'Admin',
+                'email_verified_at' => now(),
+                'password' => Hash::make('admin@admin12345'),
+                'avatar' => 'https://upload.wikimedia.org/wikipedia/commons/2/2c/Default_pfp.svg',
+                'phone_number' => '+201000000000',
+                'role' => 'admin',
+                'remember_token' => Str::random(10),
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]
+        );
+
         $faker = Faker::create();
         $roles = ['user', 'landlord'];
 
