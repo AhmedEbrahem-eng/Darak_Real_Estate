@@ -1,0 +1,4 @@
+## 2024-08-08 - Privilege Escalation via Registration Role Parameter
+**Vulnerability:** The application's user registration request allowed arbitrary role selection including `'admin'`. A malicious actor could self-register with administrator rights and bypass all administrative authorization protections.
+**Learning:** Whitelists in request validation rules must exclude administrative roles or any high-privilege designations unless those requests are authenticated and authorized under an admin context. Letting unauthenticated registration endpoints accept admin roles is a direct path to privilege escalation.
+**Prevention:** Always isolate administrative roles from standard public registration flows. High-privilege roles should only be assigned by existing administrators or through secure seeders / secure internal provisioning processes.
