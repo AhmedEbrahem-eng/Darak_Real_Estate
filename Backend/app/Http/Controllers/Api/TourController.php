@@ -38,6 +38,21 @@ class TourController extends Controller
 
     public function approveTour(Request $request, $id)
     {
+        $tour = $this->tourRepository->findTour($id);
+        if (!$tour) {
+            return response()->json(['message' => 'Tour not found'], 404);
+        }
+
+        $user = Auth::user();
+        if (!$user) {
+            return response()->json(['message' => 'Unauthenticated.'], 401);
+        }
+
+        $landlordId = $tour->property?->user_id;
+        if ($landlordId !== $user->id && $user->role !== 'admin') {
+            return response()->json(['message' => 'Unauthorized action.'], 403);
+        }
+
         $request->validate([
             'tour_date' => 'required|exists:tour_dates,id,tour_id,' . $id,
         ]);
@@ -52,6 +67,21 @@ class TourController extends Controller
 
     public function declineTour(DeclineTourRequest $request,$id)
     {
+        $tour = $this->tourRepository->findTour($id);
+        if (!$tour) {
+            return response()->json(['message' => 'Tour not found'], 404);
+        }
+
+        $user = Auth::user();
+        if (!$user) {
+            return response()->json(['message' => 'Unauthenticated.'], 401);
+        }
+
+        $landlordId = $tour->property?->user_id;
+        if ($tour->user_id !== $user->id && $landlordId !== $user->id && $user->role !== 'admin') {
+            return response()->json(['message' => 'Unauthorized action.'], 403);
+        }
+
         $message = $request->input('message');
         $success = $this->tourRepository->declineTour($id,$message);
         if (!$success) {
@@ -75,12 +105,29 @@ class TourController extends Controller
         ], 200);
     }
     public function deleteTour($id){
-        $tour= $this->tourRepository->deleteTour($id);
-        if($tour){
+        $tour = $this->tourRepository->findTour($id);
+        if (!$tour) {
+            return response()->json([
+                'message'=>'tour not found',
+            ], 400);
+        }
+
+        $user = Auth::user();
+        if (!$user) {
+            return response()->json(['message' => 'Unauthenticated.'], 401);
+        }
+
+        $landlordId = $tour->property?->user_id;
+        if ($tour->user_id !== $user->id && $landlordId !== $user->id && $user->role !== 'admin') {
+            return response()->json(['message' => 'Unauthorized action.'], 403);
+        }
+
+        $deleted = $this->tourRepository->deleteTour($id);
+        if ($deleted) {
             return response()->json([
                 'message'=>'tour cancelled successfully',
             ], 200);
-        }else{
+        } else {
             return response()->json([
                 'message'=>'tour not found',
             ], 400);

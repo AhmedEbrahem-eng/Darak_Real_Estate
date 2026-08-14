@@ -160,8 +160,8 @@ Route::prefix('tour')->middleware(['auth:sanctum', 'checkTokenExpiry'])->group(f
     Route::get('/{status}', [TourController::class, 'getToursByStatus']);
     Route::delete('/{tourId}', [TourController::class, 'deleteTour']);
 });
-Route::post('/tours/{id}/approve', [TourController::class, 'approveTour']);
-Route::post('/tours/{id}/decline', [TourController::class, 'declineTour']);
+Route::post('/tours/{id}/approve', [TourController::class, 'approveTour'])->middleware(['auth:sanctum', 'checkTokenExpiry']);
+Route::post('/tours/{id}/decline', [TourController::class, 'declineTour'])->middleware(['auth:sanctum', 'checkTokenExpiry']);
 
 Route::get('locations',[LocationController::class,'index']);
 
