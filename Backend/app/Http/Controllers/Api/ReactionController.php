@@ -31,6 +31,17 @@ class ReactionController extends Controller
     }
     public function delete(int $id)
     {
+        $reaction = $this->reactionRepository->findReaction($id);
+
+        if (!$reaction) {
+            return response()->json(["message" => "Reaction not found"], 404);
+        }
+
+        $user = Auth::user();
+        if ($reaction->user_id !== Auth::id() && (!$user || $user->role !== 'admin')) {
+            return response()->json(["message" => "Unauthorized action."], 403);
+        }
+
         $deleted = $this->reactionRepository->deleteReaction($id);
 
         if ($deleted) {
