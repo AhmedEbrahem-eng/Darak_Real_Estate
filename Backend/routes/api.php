@@ -102,7 +102,8 @@ Route::prefix('properties')->group(function(){
     Route::delete('/{id}',[PropertyController::class,'deleteProperty']);
     Route::put('/{propertyId}/status', [PropertyController::class, 'changePropertyStatus'])->middleware('admin','auth:sanctum');
 });
-Route::prefix('property-updates')->middleware('auth:sanctum')->group(function () {
+// Property updates moderation routes - restricted to administrators with valid tokens
+Route::prefix('property-updates')->middleware(['auth:sanctum', 'checkTokenExpiry', 'admin'])->group(function () {
     Route::get('/', [PropertyUpdateController::class, 'index']);
     Route::get('/{id}/new', [PropertyUpdateController::class, 'showNewProperty']);
     Route::get('/{id}/old', [PropertyUpdateController::class, 'showOldProperty']);
