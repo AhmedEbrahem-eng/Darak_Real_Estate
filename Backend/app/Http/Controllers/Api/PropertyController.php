@@ -9,6 +9,7 @@ use App\Http\Resources\PropertyResource;
 use App\Repositories\Contracts\PropertyRepositoryInterface;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class PropertyController extends Controller
 {
@@ -83,7 +84,8 @@ class PropertyController extends Controller
             $property = $this->propertyRepository->createProperty($request->validated());
             return response()->json(['message' => 'Property added successfully', 'data' => new PropertyResource($property)], 201);
         } catch (\Exception $e) {
-            return response()->json(['message' => 'Failed to add property', 'error' => $e->getMessage()], 500);
+            Log::error('Failed to add property: ' . $e->getMessage(), ['exception' => $e]);
+            return response()->json(['message' => 'Failed to add property', 'error' => 'An error occurred while adding the property'], 500);
         }
     }
 
