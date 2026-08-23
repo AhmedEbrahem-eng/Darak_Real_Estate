@@ -1,0 +1,1 @@
+{"version":1,"defects":[],"times":{"Tests\\Unit\\ExampleTest::test_that_true_is_true":0.002,"Tests\\Feature\\ExampleTest::test_the_application_returns_a_successful_response":0.027,"Tests\\Feature\\PropertyErrorLeakageTest::test_store_property_exception_returns_generic_error_and_does_not_leak_details":0.058}}
