@@ -43,12 +43,20 @@ class NotificationController extends Controller
     }
     public function deleteNotification($id)
     {
-        $result = $this->notificationRepository->deleteNotification($id);
+        $notification = $this->notificationRepository->findNotification($id);
 
-        if ($result) {
-            return response()->json(['message' => 'Notification deleted successfully'], 200);
-        } else {
+        if (!$notification) {
             return response()->json(['error' => 'Notification not found'], 404);
         }
+
+        $user = Auth::user();
+
+        // Ensure user is recipient, sender, or admin
+        if ($user && ($user->id === $notification->to_user_id || $user->id === $notification->from_user_id || $user->role === 'admin')) {
+            $this->notificationRepository->deleteNotification($notification);
+            return response()->json(['message' => 'Notification deleted successfully'], 200);
+        }
+
+        return response()->json(['error' => 'Unauthorized to delete this notification'], 403);
     }
 }

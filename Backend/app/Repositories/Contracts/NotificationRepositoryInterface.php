@@ -6,6 +6,7 @@ interface NotificationRepositoryInterface
 {
     public function getLandlordNotifications(int $landlordId);
     public function getRenterNotifications(int $userId);
-    public function deleteNotification(int $id);
+    public function findNotification(int $id);
+    public function deleteNotification($notification);
 
 }
