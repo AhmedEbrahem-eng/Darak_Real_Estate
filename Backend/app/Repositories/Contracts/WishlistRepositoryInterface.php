@@ -7,5 +7,7 @@ interface WishlistRepositoryInterface
 
     public function addToWishlist(int $userId, int $propertyId);
 
+    public function findWishlist(int $id);
+
     public function removeFromWishlist(int $id);
 }
