@@ -28,6 +28,11 @@ class WishlistRepository implements WishlistRepositoryInterface
         return $wishlist;
     }
 
+    public function findWishlist(int $id)
+    {
+        return Wishlist::find($id);
+    }
+
     public function removeFromWishlist(int $id)
     {
         $wishlistItem = Wishlist::find($id);

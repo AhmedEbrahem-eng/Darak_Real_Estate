@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Wishlists\StoreWishlistRequest;
 use App\Http\Resources\WishlistResource;
 use App\Repositories\Contracts\WishlistRepositoryInterface;
+use Illuminate\Support\Facades\Auth;
 class WishlistController extends Controller
 {
     protected $wishlistRepository;
@@ -39,7 +40,22 @@ class WishlistController extends Controller
 
     public function delete($id)
     {
-        $wishlistItem =$this->wishlistRepository->removeFromWishlist($id);
+        $wishlistItem = $this->wishlistRepository->findWishlist($id);
+
+        if (!$wishlistItem) {
+            return response()->json(['message' => 'Wishlist item not found'], 404);
+        }
+
+        $user = Auth::user();
+        if (!$user) {
+            return response()->json(['message' => 'Unauthenticated'], 401);
+        }
+
+        if ($wishlistItem->user_id !== $user->id && $user->role !== 'admin') {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        $this->wishlistRepository->removeFromWishlist($id);
         return response()->json(['message' => 'Item deleted successfully']);
     }
 }
