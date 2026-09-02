@@ -54,7 +54,7 @@ Route::group([
     Route::get('logout', [AuthController::class, 'logout']);
 });
 
-Route::prefix('users')->middleware('auth:sanctum')->group(function () {
+Route::prefix('users')->middleware(['checkTokenExpiry', 'auth:sanctum'])->group(function () {
     Route::get('/', [UserController::class, 'index']);
     Route::delete('/', [UserController::class, 'delete']);
     Route::get('/details',[UserController::class, 'show']);

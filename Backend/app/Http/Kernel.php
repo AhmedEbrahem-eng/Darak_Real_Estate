@@ -66,4 +66,14 @@ class Kernel extends HttpKernel
         'admin' => \App\Http\Middleware\AdminMiddleware::class,
         'checkTokenExpiry' => \App\Http\Middleware\CheckTokenExpiry::class,
     ];
+
+    /**
+     * The priority-sorted list of middleware.
+     *
+     * @var array<int, class-string|string>
+     */
+    protected $middlewarePriority = [
+        \App\Http\Middleware\CheckTokenExpiry::class,
+        \App\Http\Middleware\Authenticate::class,
+    ];
 }

@@ -18,12 +18,15 @@ class CheckTokenExpiry
     public function handle(Request $request, Closure $next): Response
     {
         $token = $request->bearerToken();
-        if ($token) {
-            $accessToken = PersonalAccessToken::findToken($token);
+        if ($token && str_contains($token, '|')) {
+            [$id, $plainToken] = explode('|', $token, 2);
+            $accessToken = PersonalAccessToken::find($id);
 
-            if ($accessToken && Carbon::now()->greaterThan($accessToken->expires_at)) {
-                $accessToken->delete();
-                return response()->json(['message' => 'Token has expired.'], 401);
+            if ($accessToken && hash_equals($accessToken->token, hash('sha256', $plainToken))) {
+                if ($accessToken->expires_at && Carbon::now()->greaterThan($accessToken->expires_at)) {
+                    $accessToken->delete();
+                    return response()->json(['message' => 'Token has expired.'], 401);
+                }
             }
         }
 
