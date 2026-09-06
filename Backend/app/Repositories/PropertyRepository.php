@@ -213,6 +213,11 @@ class PropertyRepository implements PropertyRepositoryInterface
         });
     }
 
+    public function findPropertyById(int $id)
+    {
+        return Property::find($id);
+    }
+
     public function delete(int $id)
     {
         $property = Property::find($id);
