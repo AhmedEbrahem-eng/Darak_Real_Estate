@@ -52,6 +52,18 @@ class Kernel extends HttpKernel
      *
      * @var array<string, class-string|string>
      */
+    /**
+     * The priority-sorted list of middleware.
+     *
+     * This forces non-global middleware to always be in the given order.
+     *
+     * @var array<int, class-string|string>
+     */
+    protected $middlewarePriority = [
+        \App\Http\Middleware\CheckTokenExpiry::class,
+        \App\Http\Middleware\Authenticate::class,
+    ];
+
     protected $middlewareAliases = [
         'auth' => \App\Http\Middleware\Authenticate::class,
         'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
