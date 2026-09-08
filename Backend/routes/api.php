@@ -124,7 +124,7 @@ Route::prefix('wishlist')->middleware(['auth:sanctum', 'checkTokenExpiry'])->gro
 });
 
 // Overview Admin Page ROUTE
-Route::prefix('dashboard')->group(function () {
+Route::prefix('dashboard')->middleware(['auth:sanctum', 'checkTokenExpiry', 'admin'])->group(function () {
     Route::get('/home', [DashboardController::class, 'overview']);
 });
 
@@ -132,11 +132,14 @@ Route::prefix('dashboard')->group(function () {
 Route::prefix('amenities')->group(function () {
     Route::get('/', [AmenityController::class, 'index']);
     Route::get('/available-amenities', [AmenityController::class, 'getAvailableAmenities']);
-    Route::post('/', [AmenityController::class, 'store']);
-    Route::put('/availability/{id}', [AmenityController::class, 'updateAvailability']);
     Route::get('/{slug}', [AmenityController::class, 'show']);
-    Route::put('/{slug}', [AmenityController::class, 'update']);
-    Route::delete('/{slug}', [AmenityController::class, 'destroy']);
+
+    Route::middleware(['auth:sanctum', 'checkTokenExpiry', 'admin'])->group(function () {
+        Route::post('/', [AmenityController::class, 'store']);
+        Route::put('/availability/{id}', [AmenityController::class, 'updateAvailability']);
+        Route::put('/{slug}', [AmenityController::class, 'update']);
+        Route::delete('/{slug}', [AmenityController::class, 'destroy']);
+    });
 });
 
 Route::prefix('reviews')->group(function () {
