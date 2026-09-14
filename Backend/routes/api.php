@@ -149,8 +149,8 @@ Route::prefix('reviews')->group(function () {
     
 });
 Route::prefix('reactions')->group(function () {
-    Route::post('/',[ReactionController::class, 'store'])->middleware('auth:sanctum');
-    Route::delete('/{id}',[ReactionController::class, 'delete']);
+    Route::post('/',[ReactionController::class, 'store'])->middleware(['auth:sanctum', 'checkTokenExpiry']);
+    Route::delete('/{id}',[ReactionController::class, 'delete'])->middleware(['auth:sanctum', 'checkTokenExpiry']);
 });
 
 
