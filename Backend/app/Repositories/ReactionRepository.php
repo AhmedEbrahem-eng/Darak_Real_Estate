@@ -25,4 +25,9 @@ class ReactionRepository implements ReactionRepositoryInterface
             return $reaction->delete();
         }
     }
+
+    public function findReaction(int $id)
+    {
+        return Reaction::find($id);
+    }
 }
