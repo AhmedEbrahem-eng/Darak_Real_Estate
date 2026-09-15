@@ -1,0 +1,4 @@
+## 2026-09-15 - Unauthenticated Tour Approval/Decline and Observer Auth Traps
+**Vulnerability:** Tour request approval and decline endpoints (`/tours/{id}/approve` and `/tours/{id}/decline`) lacked authentication middleware and ownership checks, allowing unauthenticated guests or unauthorized users to alter tour statuses and trigger automated email notifications.
+**Learning:** Routes defined outside authenticated groups bypass Sanctum authentication completely. Additionally, model observers creating records with `Auth::id()` fail during unauthenticated operations or programmatically executed models if fallback user IDs (`Auth::id() ?? $tour->user_id`) are not supplied.
+**Prevention:** Group all action endpoints requiring authentication under `['auth:sanctum', 'checkTokenExpiry']` middleware and verify landlord/admin authorization at the controller level using loaded property relationships.
