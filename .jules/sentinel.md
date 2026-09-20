@@ -1,0 +1,4 @@
+## 2026-03-31 - Review Endpoint Authorization and Soft Delete Testing
+**Vulnerability:** Insecure Direct Object Reference (IDOR) and missing authentication on `PUT /api/reviews/{id}` and `DELETE /api/reviews/{id}` routes allowed unauthenticated and unauthorized users to modify or delete any user's review.
+**Learning:** `ReviewRepository::deleteReview` previously attempted to set `$review['user_id'] = Auth::id()` before deletion without checking ownership. Additionally, the `Review` model implements `SoftDeletes`, meaning `$review->delete()` sets `deleted_at` rather than removing the row from the database.
+**Prevention:** Perform explicit ownership (or admin role) authorization checks at the controller level before repository invocation, and use `assertSoftDeleted` in tests when asserting removal of models with soft deletes.

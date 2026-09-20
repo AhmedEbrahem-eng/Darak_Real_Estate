@@ -44,20 +44,39 @@ class ReviewController extends Controller
     }
     public function update(UpdateReviewRequest $request, $id)
     {
-        $review = $this->reviewRepository->updateReview($id, $request->validated());
-        if ($review) {
-            return response()->json(['data' => new ReviewResource($review)], 200);
-        } else {
-            return response()->json(['message' => 'Failed to update review or review not found'], 404);
+        $review = $this->reviewRepository->findReview($id);
+        if (!$review) {
+            return response()->json(['message' => 'Review not found'], 404);
         }
+
+        if ($review->user_id !== \Illuminate\Support\Facades\Auth::id()) {
+            return response()->json(['message' => 'Unauthorized action'], 403);
+        }
+
+        $updated = $this->reviewRepository->updateReview($id, $request->validated());
+        if ($updated) {
+            return response()->json(['data' => new ReviewResource($updated)], 200);
+        }
+        return response()->json(['message' => 'Failed to update review'], 400);
     }
-    public function delete($id){
-        $review = $this->reviewRepository->deleteReview($id);
-        if ($review) {
-            return response()->json(['message' => 'review deleted successfuly'], 200);
-        } else {
-            return response()->json(['message' => 'review not found'], 404);
+
+    public function delete($id)
+    {
+        $review = $this->reviewRepository->findReview($id);
+        if (!$review) {
+            return response()->json(['message' => 'Review not found'], 404);
         }
+
+        $user = \Illuminate\Support\Facades\Auth::user();
+        if ($review->user_id !== $user->id && $user->role !== 'admin') {
+            return response()->json(['message' => 'Unauthorized action'], 403);
+        }
+
+        $deleted = $this->reviewRepository->deleteReview($review);
+        if ($deleted) {
+            return response()->json(['message' => 'review deleted successfuly'], 200);
+        }
+        return response()->json(['message' => 'Failed to delete review'], 400);
     }
     public function calcAverage($id)
     {
