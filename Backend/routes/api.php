@@ -86,7 +86,14 @@ Route::prefix('reason-report')->group(function(){
     Route::put('/{id}',[ReasonReportController::class,'update']);
 });
 
-Route::apiResource('property-types', PropertyTypeController::class);
+Route::get('property-types', [PropertyTypeController::class, 'index']);
+Route::get('property-types/{property_type}', [PropertyTypeController::class, 'show']);
+
+Route::middleware(['auth:sanctum', 'checkTokenExpiry', 'admin'])->group(function () {
+    Route::post('property-types', [PropertyTypeController::class, 'store']);
+    Route::put('property-types/{property_type}', [PropertyTypeController::class, 'update']);
+    Route::delete('property-types/{property_type}', [PropertyTypeController::class, 'destroy']);
+});
 
 Route::prefix('properties')->group(function(){
     Route::get('/',[PropertyController::class,'index']);
