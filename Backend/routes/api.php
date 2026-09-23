@@ -123,20 +123,24 @@ Route::prefix('wishlist')->middleware(['auth:sanctum', 'checkTokenExpiry'])->gro
     Route::delete('/{id}',[WishlistController::class,'delete']);
 });
 
-// Overview Admin Page ROUTE
-Route::prefix('dashboard')->group(function () {
-    Route::get('/home', [DashboardController::class, 'overview']);
+// Overview Admin Page & Amenity Mutation ROUTEs (Admin restricted)
+Route::group([
+    'middleware' => ['auth:sanctum', 'checkTokenExpiry', 'admin']
+], function () {
+    Route::get('dashboard/home', [DashboardController::class, 'overview']);
+    Route::prefix('amenities')->group(function () {
+        Route::post('/', [AmenityController::class, 'store']);
+        Route::put('/availability/{id}', [AmenityController::class, 'updateAvailability']);
+        Route::put('/{slug}', [AmenityController::class, 'update']);
+        Route::delete('/{slug}', [AmenityController::class, 'destroy']);
+    });
 });
 
-// Amenity Admin Page ROUTE
+// Public Amenity Read ROUTEs
 Route::prefix('amenities')->group(function () {
     Route::get('/', [AmenityController::class, 'index']);
     Route::get('/available-amenities', [AmenityController::class, 'getAvailableAmenities']);
-    Route::post('/', [AmenityController::class, 'store']);
-    Route::put('/availability/{id}', [AmenityController::class, 'updateAvailability']);
     Route::get('/{slug}', [AmenityController::class, 'show']);
-    Route::put('/{slug}', [AmenityController::class, 'update']);
-    Route::delete('/{slug}', [AmenityController::class, 'destroy']);
 });
 
 Route::prefix('reviews')->group(function () {
