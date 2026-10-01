@@ -7,6 +7,7 @@ use App\Http\Requests\Reviews\StoreReviewRequest;
 use App\Http\Requests\Reviews\UpdateReviewRequest;
 use App\Http\Resources\ReviewResource;
 use App\Repositories\Contracts\ReviewRepositoryInterface;
+use Illuminate\Support\Facades\Auth;
 
 class ReviewController extends Controller
 {
@@ -44,20 +45,33 @@ class ReviewController extends Controller
     }
     public function update(UpdateReviewRequest $request, $id)
     {
-        $review = $this->reviewRepository->updateReview($id, $request->validated());
-        if ($review) {
-            return response()->json(['data' => new ReviewResource($review)], 200);
+        $review = $this->reviewRepository->findReview($id);
+        if (!$review) {
+            return response()->json(['message' => 'Review not found'], 404);
+        }
+        if ($review->user_id !== Auth::id()) {
+            return response()->json(['message' => 'Unauthorized access'], 403);
+        }
+
+        $updatedReview = $this->reviewRepository->updateReview($id, $request->validated());
+        if ($updatedReview) {
+            return response()->json(['data' => new ReviewResource($updatedReview)], 200);
         } else {
             return response()->json(['message' => 'Failed to update review or review not found'], 404);
         }
     }
     public function delete($id){
-        $review = $this->reviewRepository->deleteReview($id);
-        if ($review) {
-            return response()->json(['message' => 'review deleted successfuly'], 200);
-        } else {
+        $review = $this->reviewRepository->findReview($id);
+        if (!$review) {
             return response()->json(['message' => 'review not found'], 404);
         }
+        $user = Auth::user();
+        if ($review->user_id !== $user->id && $user->role !== 'admin') {
+            return response()->json(['message' => 'Unauthorized access'], 403);
+        }
+
+        $this->reviewRepository->deleteReview($id);
+        return response()->json(['message' => 'review deleted successfuly'], 200);
     }
     public function calcAverage($id)
     {
