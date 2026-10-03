@@ -109,7 +109,7 @@ Route::prefix('property-updates')->middleware('auth:sanctum')->group(function ()
     Route::post('/accepted/{id}', [PropertyUpdateController::class, 'approve']);
     Route::post('/rejected/{id}', [PropertyUpdateController::class, 'reject']);
 });
-Route::delete('images/{imageId}', [ImageController::class, 'deleteImage']);
+Route::delete('images/{imageId}', [ImageController::class, 'deleteImage'])->middleware(['auth:sanctum', 'checkTokenExpiry']);
 
 Route::prefix('notifications')->middleware(['auth:sanctum', 'checkTokenExpiry'])->group(function(){
     Route::get('/landlord',[NotificationController::class,'showLandlordNotifications']);
