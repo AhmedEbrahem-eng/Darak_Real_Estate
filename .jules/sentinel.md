@@ -1,0 +1,4 @@
+## 2025-05-18 - Unprotected Property Deletion Route and Lack of Ownership Verification
+**Vulnerability:** The `DELETE /api/properties/{id}` route was completely unauthenticated and lacked ownership/admin authorization checks, allowing any anonymous client to delete arbitrary property records.
+**Learning:** Route-level middleware alone is insufficient if individual routes inside route groups omit authorization logic. Always verify both route-level middleware (`['auth:sanctum', 'checkTokenExpiry']`) and controller-level resource ownership or admin role checks (`$user->id === $property->user_id || $user->role === 'admin'`).
+**Prevention:** Ensure all deletion and modification endpoints enforce authentication middleware and explicit owner/admin authorization checks using repository lookup methods before deletion.
