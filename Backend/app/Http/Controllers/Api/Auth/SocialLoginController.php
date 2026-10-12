@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Laravel\Socialite\Facades\Socialite;
 
 class SocialLoginController extends Controller
@@ -27,9 +28,10 @@ class SocialLoginController extends Controller
         } 
         catch (\Throwable $th) 
         {
+            Log::error($th);
             return response()->json([
                 'success' => false,
-                'message' => $th->getMessage(),
+                'message' => 'An unexpected error occurred. Please try again later.',
             ], 500);
         }
     }
