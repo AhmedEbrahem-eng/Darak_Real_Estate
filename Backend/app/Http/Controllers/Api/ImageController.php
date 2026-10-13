@@ -16,13 +16,28 @@ class ImageController extends Controller
         $this->imageRepository = $imageRepository;
     }
 
-    public function deleteImage($imageId)
+    public function deleteImage(Request $request, $imageId)
     {
-            $deleted=$this->imageRepository->deleteImage($imageId);
-            if(!$deleted){
-                return response()->json(['message' => 'Image dosen`t exist'], 200);
-            }
-            return response()->json(['message' => 'Image deleted successfully'], 200);
-      
+        $image = $this->imageRepository->findImage((int) $imageId);
+
+        if (!$image) {
+            return response()->json(['message' => 'Image doesn\'t exist'], 404);
+        }
+
+        $user = $request->user();
+        $isOwner = $image->property && (int) $image->property->user_id === (int) $user->id;
+        $isAdmin = $user->role === 'admin';
+
+        if (!$isOwner && !$isAdmin) {
+            return response()->json(['message' => 'Unauthorized action.'], 403);
+        }
+
+        $deleted = $this->imageRepository->deleteImage((int) $imageId);
+
+        if (!$deleted) {
+            return response()->json(['message' => 'Image doesn\'t exist'], 404);
+        }
+
+        return response()->json(['message' => 'Image deleted successfully'], 200);
     }
 }
