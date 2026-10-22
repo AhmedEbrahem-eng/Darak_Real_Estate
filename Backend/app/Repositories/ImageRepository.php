@@ -8,6 +8,11 @@ use Illuminate\Support\Facades\Storage;
 
 class ImageRepository implements ImageRepositoryInterface
 {
+    public function findImage(int $imageId)
+    {
+        return PropertyImage::with('property')->find($imageId);
+    }
+
     public function deleteImage(int $imageId)
 {
     DB::beginTransaction();
