@@ -1,11 +1,9 @@
 <?php
 
-
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Repositories\Contracts\ImageRepositoryInterface;
-use Illuminate\Http\Request;
 
 class ImageController extends Controller
 {
@@ -18,11 +16,26 @@ class ImageController extends Controller
 
     public function deleteImage($imageId)
     {
-            $deleted=$this->imageRepository->deleteImage($imageId);
-            if(!$deleted){
-                return response()->json(['message' => 'Image dosen`t exist'], 200);
-            }
-            return response()->json(['message' => 'Image deleted successfully'], 200);
-      
+        $image = $this->imageRepository->findImage($imageId);
+        if (! $image) {
+            return response()->json(['message' => 'Image dosen`t exist'], 404);
+        }
+
+        $user = auth()->user();
+        if (! $user) {
+            return response()->json(['message' => 'Unauthenticated'], 401);
+        }
+
+        // Only allow property owner or admin to delete property images (prevents IDOR)
+        if ($user->role !== 'admin' && (! $image->property || $image->property->user_id !== $user->id)) {
+            return response()->json(['message' => 'You are not authorized to delete this image'], 403);
+        }
+
+        $deleted = $this->imageRepository->deleteImage($imageId);
+        if (! $deleted) {
+            return response()->json(['message' => 'Image dosen`t exist'], 404);
+        }
+
+        return response()->json(['message' => 'Image deleted successfully'], 200);
     }
 }
